@@ -1,0 +1,123 @@
+<div class="patient-dashboard-content" [ngClass]="{'dark-mode': isDarkMode}">
+    <main class="main-dashboard-content" aria-label="Main Dashboard Content">
+        <header class="dashboard-header" data-aos="zoom-in">
+            <h1 class="title">Welcome to MedTrack, {{ patientName || 'Patient' }}!</h1>
+            <p class="subtitle">Your personalized health companion.</p>
+        </header>
+
+        <section class="dashboard-section health-overview" data-aos="fade-up">
+            <h2 class="section-title">Health Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="100">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#FF6B6B" stroke-width="10" fill="transparent" r="50" cx="60" cy="60" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-heartbeat stat-icon"></i>
+                        <h3 class="stat-title">Blood Pressure</h3>
+                        <p class="stat-value">{{ bloodPressure || 'N/A' }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="200">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#4ECDC4" stroke-width="10" fill="transparent" r="50" cx="60" cy="60" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-tint stat-icon"></i>
+                        <h3 class="stat-title">Glucose Level</h3>
+                        <p class="stat-value">{{ glucoseLevel || 'N/A' }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="300">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#FF9F1C" stroke-width="10" fill="transparent" r="50" cx="60" cy="60" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-heart stat-icon"></i>
+                        <h3 class="stat-title">Heart Rate</h3>
+                        <p class="stat-value">{{ heartRate || 'N/A' }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="400">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#45B7D1" stroke-width="10" fill="transparent" r="50" cx="60" cy="60" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-lungs stat-icon"></i>
+                        <h3 class="stat-title">Oxygen Saturation</h3>
+                        <p class="stat-value">{{ oxygenSaturation || 'N/A' }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="500">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#96CEB4" stroke-width="10" fill="transparent" r="50" cx="60" cy="60" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-thermometer-half stat-icon"></i>
+                        <h3 class="stat-title">Temperature</h3>
+                        <p class="stat-value">{{ temperature || 'N/A' }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="600">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#D4A5A5" stroke-width="10" fill="transparent" r="50" cx="60" cy="60" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-bed stat-icon"></i>
+                        <h3 class="stat-title">Sleep Hours</h3>
+                        <p class="stat-value">{{ sleepHours || 'N/A' }}</p>
+                    </div>
+                </div>
+            </div>
+            <a routerLink="/patient/statistics" class="view-all-link" data-aos="fade-up" data-aos-delay="700">View Detailed Statistics</a>
+        </section>
+
+        <section class="dashboard-section" data-aos="fade-right" data-aos-delay="100">
+            <h2 class="section-title">Upcoming Medications</h2>
+            <div class="medications-grid">
+                <div *ngFor="let med of upcomingMedications" class="medication-card" data-tilt data-aos="flip-right">
+                    <p class="medication-name">{{ med.name }}</p>
+                    <p class="medication-info">Dose: {{ med.dosage }}</p>
+                    <p class="medication-info">Time: {{ getEarliestTime(med) | date: 'shortTime' }}</p>
+                </div>
+                <div *ngIf="upcomingMedications.length === 0" class="no-data">No upcoming medications today.</div>
+            </div>
+            <a routerLink="/patient/medications" class="view-all-link" data-aos="fade-up">View All Medications</a>
+        </section>
+
+        <section class="dashboard-section" data-aos="fade-left" data-aos-delay="200">
+            <h2 class="section-title">Next Appointment</h2>
+            <div class="appointment-card" *ngIf="nextAppointment; else noAppointment" data-tilt data-aos="flip-left">
+                <p class="appointment-info">With Dr. {{ nextAppointment.doctorName }}</p>
+                <p class="appointment-info">Date: {{ nextAppointment.slotStartTime | date: 'medium' }}</p>
+                <p class="appointment-info">Status: {{ nextAppointment.status }}</p>
+            </div>
+            <ng-template #noAppointment>
+                <p class="no-data">No upcoming appointments scheduled.</p>
+            </ng-template>
+            <a routerLink="/patient/appointments" class="view-all-link" data-aos="fade-up">Manage Appointments</a>
+        </section>
+
+        <section class="dashboard-section" data-aos="fade-up" data-aos-delay="300">
+            <h2 class="section-title">Recent Notifications</h2>
+            <div class="notifications-list">
+                <div *ngFor="let not of recentNotifications" class="notification-card" data-tilt data-aos="flip-up">
+                    <p class="notification-message">{{ not.message }}</p>
+                    <p class="notification-time">{{ not.sentAt | date: 'short' }}</p>
+                </div>
+                <div *ngIf="recentNotifications.length === 0" class="no-data">No recent notifications.</div>
+            </div>
+            <a routerLink="/patient/notifications" class="view-all-link" data-aos="fade-up">View All Notifications</a>
+        </section>
+
+        <section class="quick-actions" data-aos="zoom-in" data-aos-delay="400">
+            <h2 class="section-title">Quick Actions</h2>
+            <div class="actions-grid">
+                <button routerLink="/patient/report-upload" class="action-button" data-aos="flip-up" data-aos-delay="100">Upload Report</button>
+                <button routerLink="/patient/chat" class="action-button" data-aos="flip-up" data-aos-delay="200">Chat with Doctor</button>
+                <button routerLink="/patient/doctor-ratings" class="action-button" data-aos="flip-up" data-aos-delay="300">Rate Doctor</button>
+                <button routerLink="/patient/statistics" class="action-button" data-aos="flip-up" data-aos-delay="400">View Statistics</button>
+            </div>
+        </section>
+    </main>
+</div>  

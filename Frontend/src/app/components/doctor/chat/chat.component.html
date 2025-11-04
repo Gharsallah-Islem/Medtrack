@@ -1,0 +1,144 @@
+<div class="chat" [ngClass]="{'dark-mode': isDarkMode}">
+    <!-- WebGL Background Canvas -->
+    <canvas id="bgCanvas" class="webgl-bg"></canvas>
+
+    <!-- Sidebar (Navigation) -->
+    <aside class="sidebar" [class.open]="isSidebarOpen" aria-label="Doctor Navigation">
+        <button class="sidebar-toggle" (click)="toggleSidebar($event)" aria-label="Toggle Navigation">
+            <span *ngIf="!isSidebarOpen"><i class="fas fa-bars"></i></span>
+            <span *ngIf="isSidebarOpen"><i class="fas fa-times"></i></span>
+        </button>
+        <nav class="sidebar-nav">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">MedSync</h2>
+                <p class="sidebar-subtitle">Doctor Portal</p>
+            </div>
+            <a routerLink="/doctor/dashboard" class="nav-link" data-aos="fade-right" data-aos-delay="100">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a routerLink="/doctor/appointments" class="nav-link" data-aos="fade-right" data-aos-delay="200">
+                <i class="fas fa-calendar-check"></i> Appointments
+            </a>
+            <a routerLink="/doctor/availability" class="nav-link" data-aos="fade-right" data-aos-delay="300">
+                <i class="fas fa-clock"></i> Availability
+            </a>
+            <a routerLink="/doctor/patient-reports" class="nav-link" data-aos="fade-right" data-aos-delay="400">
+                <i class="fas fa-file-medical"></i> Patient Reports
+            </a>
+            <a routerLink="/doctor/statistics" class="nav-link" data-aos="fade-right" data-aos-delay="500">
+                <i class="fas fa-chart-line"></i> Statistics
+            </a>
+            <a routerLink="/doctor/chat" class="nav-link active" data-aos="fade-right" data-aos-delay="600">
+                <i class="fas fa-comments"></i> Chat
+            </a>
+            <a routerLink="/doctor/notifications" class="nav-link" data-aos="fade-right" data-aos-delay="700">
+                <i class="fas fa-bell"></i> Notifications
+            </a>
+            <button class="nav-link logout-button" (click)="logout()" data-aos="fade-right" data-aos-delay="800">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </nav>
+        <button class="dark-mode-toggle" (click)="toggleDarkMode()" aria-label="Toggle Dark Mode">
+            <span *ngIf="!isDarkMode"><i class="fas fa-moon"></i></span>
+            <span *ngIf="isDarkMode"><i class="fas fa-sun"></i></span>
+        </button>
+    </aside>
+
+    <!-- Main Content (Unchanged) -->
+    <main class="main-content" (click)="closeSidebarOnClickOutside($event)" aria-label="Chat with Patient">
+        <!-- Notification Bubble -->
+        <div class="notification-bubble" (click)="toggleNotifications($event)" data-aos="zoom-in">
+            <i class="fas fa-bell notification-icon"></i>
+            <span class="badge" *ngIf="recentNotifications.length > 0">{{ recentNotifications.length }}</span>
+        </div>
+        <div class="notification-dropdown" *ngIf="isNotificationsOpen" data-aos="fade-down">
+            <div class="dropdown-header">
+                <h3>Notifications</h3>
+                <button class="close-btn" (click)="toggleNotifications($event)">✕</button>
+            </div>
+            <div class="notification-list">
+                <div *ngFor="let not of recentNotifications" class="notification-item" data-tilt data-aos="fade-up">
+                    <p class="notification-message">{{ not.message }}</p>
+                    <p class="notification-time">{{ not.sentAt | date: 'short' }}</p>
+                </div>
+                <div *ngIf="recentNotifications.length === 0" class="no-data">
+                    No recent notifications.
+                </div>
+            </div>
+            <a routerLink="/doctor/notifications" class="view-all-link">View All Notifications</a>
+        </div>
+
+        <!-- Chat Layout -->
+        <div class="chat-container">
+            <!-- Contacts Sidebar -->
+            <aside class="contacts-sidebar" data-aos="fade-right">
+                <div class="contacts-header">
+                    <h2>Patients</h2>
+                    <div class="contacts-search">
+                        <input type="text" class="search-input" placeholder="Search patients..." />
+                    </div>
+                </div>
+                <div class="contacts-list">
+                    <div *ngFor="let patient of patients" class="contact-item" [class.active]="patientId === patient.id"
+                        (click)="selectPatient(patient.id)" data-aos="fade-up" data-aos-delay="50">
+                        <div class="contact-avatar">
+                            <div class="avatar" [style.background]="getAvatarColor(patient.id)"></div>
+                        </div>
+                        <div class="contact-info">
+                            <h3 class="contact-name">{{ patient.username }}</h3>
+                            <p class="contact-last-message">{{ getLastMessage(patient.id) || 'No messages yet' }}</p>
+                        </div>
+                        <span *ngIf="hasUnreadMessages(patient.id)" class="unread-dot"></span>
+                    </div>
+                    <div *ngIf="patients.length === 0" class="no-data">
+                        No patients available.
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Chat Area -->
+            <section class="chat-area">
+                <!-- Chat Header -->
+                <header class="chat-header" data-aos="zoom-in">
+                    <div class="chat-header-info" *ngIf="patientId">
+                        <div class="contact-avatar">
+                            <div class="avatar" [style.background]="patientId ? getAvatarColor(patientId) : '#ccc'">
+                            </div>
+                        </div>
+                        <div>
+                            <h1 class="chat-title">{{ patientName || 'Select a patient' }}</h1>
+                            <p class="chat-status">Online</p>
+                        </div>
+                    </div>
+                    <div *ngIf="!patientId" class="no-selection">
+                        <h1 class="chat-title">Select a patient to start chatting</h1>
+                    </div>
+                </header>
+
+                <!-- Messages Section -->
+                <div #messagesContainer class="messages-container" data-aos="fade-up">
+                    <div *ngFor="let msg of messages" class="message"
+                        [ngClass]="{'sent': msg.sender.id === doctorId, 'received': msg.sender.id !== doctorId, 'unread': !msg.read && msg.sender.id !== doctorId}"
+                        data-aos="fade-up" data-aos-delay="50">
+                        <div class="message-content">
+                            <p class="message-text">{{ msg.message }}</p>
+                            <p class="message-time">{{ msg.timestamp | date: 'shortTime' }}</p>
+                        </div>
+                    </div>
+                    <div *ngIf="messages.length === 0 && patientId" class="no-messages">
+                        No messages yet. Start the conversation!
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <form (ngSubmit)="sendMessage()" class="chat-input-form" *ngIf="patientId">
+                    <input [(ngModel)]="newMessage" name="message" class="chat-input" placeholder="Type a message..."
+                        required [disabled]="!patientId" />
+                    <button type="submit" class="send-btn" [disabled]="!newMessage.trim() || !patientId">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </section>
+        </div>
+    </main>
+</div>

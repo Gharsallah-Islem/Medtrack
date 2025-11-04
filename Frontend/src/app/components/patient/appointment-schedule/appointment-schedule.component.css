@@ -1,0 +1,562 @@
+/* Import fonts and icons */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
+/* General Styles */
+.appointment-schedule {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Inter', sans-serif;
+    background: #f5f7fa;
+    /* Clean, light background */
+    color: #333;
+    min-height: 100vh;
+    position: relative;
+}
+
+.appointment-schedule.dark-mode {
+    background: #1a1c1e;
+    color: #e0e0e0;
+}
+
+/* Title */
+.title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2a5298;
+    text-align: center;
+    margin-bottom: 2rem;
+    background: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.dark-mode .title {
+    color: #66b0ff;
+    background: #242526;
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 0.5rem;
+}
+
+.dark-mode .section-title {
+    color: #e0e0e0;
+    border-bottom: 1px solid #3a3b3c;
+}
+
+/* Appointments Section */
+.appointments-section,
+.filter-section,
+.doctors-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dark-mode .appointments-section,
+.dark-mode .filter-section,
+.dark-mode .doctors-section {
+    background: #242526;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.appointments-section:hover,
+.doctors-section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .appointments-section:hover,
+.dark-mode .doctors-section:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.appointments-grid,
+.doctors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.appointment-card,
+.doctor-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border-left: 4px solid #4a90e2;
+}
+
+.dark-mode .appointment-card,
+.dark-mode .doctor-card {
+    background: #2d2f31;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-left: 4px solid #66b0ff;
+}
+
+.appointment-card:hover,
+.doctor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .appointment-card:hover,
+.dark-mode .doctor-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.appointment-header,
+.doctor-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.appointment-doctor,
+.doctor-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.dark-mode .appointment-doctor,
+.dark-mode .doctor-name {
+    color: #e0e0e0;
+}
+
+.appointment-status {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    color: #fff;
+    margin-left: auto;
+    font-weight: 500;
+}
+
+.appointment-status.pending {
+    background: #f39c12;
+}
+
+.appointment-status.approved {
+    background: #28a745;
+}
+
+.appointment-status.completed {
+    background: #6c757d;
+}
+
+.appointment-info {
+    font-size: 0.95rem;
+    color: #555;
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dark-mode .appointment-info {
+    color: #b0b3b8;
+}
+
+.doctor-header {
+    gap: 1rem;
+}
+
+.doctor-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #4a90e2;
+    /* Default, overridden by dynamic color */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.dark-mode .doctor-avatar {
+    background: #66b0ff;
+}
+
+.doctor-info {
+    flex: 1;
+}
+
+.doctor-meta {
+    margin-top: 0.5rem;
+}
+
+.doctor-specialty,
+.doctor-location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0.25rem 0;
+}
+
+.dark-mode .doctor-specialty,
+.dark-mode .doctor-location {
+    color: #b0b3b8;
+}
+
+.action-button {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.appointment-button {
+    background: #4a90e2;
+    color: #fff;
+}
+
+.appointment-button:hover {
+    background: #2a5298;
+    transform: scale(1.02);
+}
+
+.cancel-button {
+    background: #dc3545;
+    color: #fff;
+}
+
+.cancel-button:hover {
+    background: #c82333;
+    transform: scale(1.02);
+}
+
+.submit-button {
+    background: #28a745;
+    color: #fff;
+}
+
+.submit-button:hover {
+    background: #218838;
+    transform: scale(1.02);
+}
+
+.submit-button:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.no-data {
+    text-align: center;
+    color: #666;
+    font-size: 1rem;
+    padding: 2rem;
+}
+
+.dark-mode .no-data {
+    color: #b0b3b8;
+}
+
+.suggestion {
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 0.5rem;
+}
+
+.dark-mode .suggestion {
+    color: #909296;
+}
+
+.filter-section {
+    padding: 1rem 1.5rem;
+}
+
+.filter-container {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #333;
+    background: #f9f9f9;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filter-input:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+    outline: none;
+}
+
+.filter-input::placeholder {
+    color: #888;
+}
+
+.dark-mode .filter-input {
+    background: #2d2f31;
+    border-color: #3a3b3c;
+    color: #e0e0e0;
+}
+
+.dark-mode .filter-input::placeholder {
+    color: #909296;
+}
+
+.dark-mode .filter-input:focus {
+    border-color: #66b0ff;
+    box-shadow: 0 0 0 3px rgba(102, 176, 255, 0.2);
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease-out;
+}
+
+.dark-mode .modal-content {
+    background: #242526;
+}
+
+@keyframes slideIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 1rem;
+}
+
+.dark-mode .modal-header {
+    border-bottom: 1px solid #3a3b3c;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.dark-mode .modal-title {
+    color: #e0e0e0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #dc3545;
+}
+
+.dark-mode .close-btn {
+    color: #b0b3b8;
+}
+
+.dark-mode .close-btn:hover {
+    color: #ff6b6b;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dark-mode .form-label {
+    color: #e0e0e0;
+}
+
+.form-input,
+.form-select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #333;
+    background: #f9f9f9;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+    outline: none;
+}
+
+.form-select:disabled {
+    background: #e9ecef;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.dark-mode .form-input,
+.dark-mode .form-select {
+    background: #2d2f31;
+    border-color: #3a3b3c;
+    color: #e0e0e0;
+}
+
+.dark-mode .form-input:focus,
+.dark-mode .form-select:focus {
+    border-color: #66b0ff;
+    box-shadow: 0 0 0 3px rgba(102, 176, 255, 0.2);
+}
+
+.dark-mode .form-select:disabled {
+    background: #3a3b3c;
+    opacity: 0.7;
+}
+
+.form-help {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 0.25rem;
+}
+
+.dark-mode .form-help {
+    color: #909296;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+    .appointment-schedule {
+        padding: 1.5rem 1rem;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .appointments-grid,
+    .doctors-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .filter-container {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .filter-group {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 1.8rem;
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+    }
+
+    .modal-content {
+        max-width: 90%;
+        padding: 1rem;
+    }
+
+    .modal-title {
+        font-size: 1.3rem;
+    }
+
+    .action-button {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+}

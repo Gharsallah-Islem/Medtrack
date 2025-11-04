@@ -1,0 +1,361 @@
+/* Import fonts and icons */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
+/* General Styles */
+.doctor-ratings {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Inter', sans-serif;
+    background: #f5f7fa;
+    /* Clean, light background */
+    color: #333;
+    min-height: 100vh;
+}
+
+.doctor-ratings.dark-mode {
+    background: #1a1c1e;
+    color: #e0e0e0;
+}
+
+/* Title */
+.title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2a5298;
+    text-align: center;
+    margin-bottom: 2rem;
+    background: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.dark-mode .title {
+    color: #66b0ff;
+    background: #242526;
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 0.5rem;
+}
+
+.dark-mode .section-title {
+    color: #e0e0e0;
+    border-bottom: 1px solid #3a3b3c;
+}
+
+/* Ratings Section */
+.ratings-section,
+.submit-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dark-mode .ratings-section,
+.dark-mode .submit-section {
+    background: #242526;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.ratings-section:hover,
+.submit-section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .ratings-section:hover,
+.dark-mode .submit-section:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.ratings-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.rating-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border-left: 4px solid #4a90e2;
+}
+
+.dark-mode .rating-card {
+    background: #2d2f31;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-left: 4px solid #66b0ff;
+}
+
+.rating-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .rating-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.rating-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.doctor-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #4a90e2;
+    /* Default, overridden by dynamic color */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.dark-mode .doctor-avatar {
+    background: #66b0ff;
+}
+
+.rating-meta {
+    flex: 1;
+}
+
+.doctor-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.dark-mode .doctor-name {
+    color: #e0e0e0;
+}
+
+.rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.25rem;
+}
+
+.fa-star {
+    color: #e0e0e0;
+    font-size: 1rem;
+}
+
+.fa-star.filled {
+    color: #f39c12;
+}
+
+.dark-mode .fa-star {
+    color: #3a3b3c;
+}
+
+.dark-mode .fa-star.filled {
+    color: #ffca28;
+}
+
+.rating-value {
+    font-size: 0.9rem;
+    color: #666;
+    margin-left: 0.5rem;
+}
+
+.dark-mode .rating-value {
+    color: #b0b3b8;
+}
+
+.rating-review {
+    font-size: 0.95rem;
+    color: #555;
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dark-mode .rating-review {
+    color: #b0b3b8;
+}
+
+.rating-time {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dark-mode .rating-time {
+    color: #909296;
+}
+
+.no-data {
+    text-align: center;
+    color: #666;
+    font-size: 1rem;
+    padding: 2rem;
+}
+
+.dark-mode .no-data {
+    color: #b0b3b8;
+}
+
+.suggestion {
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 0.5rem;
+}
+
+.dark-mode .suggestion {
+    color: #909296;
+}
+
+/* Submit Rating Section */
+.rating-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dark-mode .form-label {
+    color: #e0e0e0;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #333;
+    background: #f9f9f9;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+    outline: none;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.dark-mode .form-input,
+.dark-mode .form-select,
+.dark-mode .form-textarea {
+    background: #2d2f31;
+    border-color: #3a3b3c;
+    color: #e0e0e0;
+}
+
+.dark-mode .form-input:focus,
+.dark-mode .form-select:focus,
+.dark-mode .form-textarea:focus {
+    border-color: #66b0ff;
+    box-shadow: 0 0 0 3px rgba(102, 176, 255, 0.2);
+}
+
+.submit-button {
+    background: #28a745;
+    color: #fff;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.submit-button:hover {
+    background: #218838;
+    transform: scale(1.02);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .doctor-ratings {
+        padding: 1.5rem 1rem;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .ratings-list {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 1.8rem;
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+    }
+
+    .rating-card {
+        padding: 1rem;
+    }
+
+    .doctor-name {
+        font-size: 1.2rem;
+    }
+
+    .submit-button {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+}

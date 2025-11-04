@@ -1,0 +1,189 @@
+<div class="availability-management" [ngClass]="{'dark-mode': isDarkMode}">
+    <!-- WebGL Background Canvas -->
+    <canvas id="bgCanvas" class="webgl-bg"></canvas>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" [class.open]="isSidebarOpen" aria-label="Doctor Navigation">
+        <button class="sidebar-toggle" (click)="toggleSidebar($event)" aria-label="Toggle Navigation">
+            <span *ngIf="!isSidebarOpen"><i class="fas fa-bars"></i></span>
+            <span *ngIf="isSidebarOpen"><i class="fas fa-times"></i></span>
+        </button>
+        <nav class="sidebar-nav">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">MedSync</h2>
+                <p class="sidebar-subtitle">Doctor Portal</p>
+            </div>
+            <a routerLink="/doctor/dashboard" class="nav-link" data-aos="fade-right" data-aos-delay="100">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a routerLink="/doctor/appointments" class="nav-link" data-aos="fade-right" data-aos-delay="200">
+                <i class="fas fa-calendar-check"></i> Appointments
+            </a>
+            <a routerLink="/doctor/availability" class="nav-link active" data-aos="fade-right" data-aos-delay="300">
+                <i class="fas fa-clock"></i> Availability
+            </a>
+            <a routerLink="/doctor/patient-reports" class="nav-link" data-aos="fade-right" data-aos-delay="400">
+                <i class="fas fa-file-medical"></i> Patient Reports
+            </a>
+            <a routerLink="/doctor/chat" class="nav-link" data-aos="fade-right" data-aos-delay="500">
+                <i class="fas fa-comments"></i> Chat
+            </a>
+            <a routerLink="/doctor/statistics" class="nav-link" data-aos="fade-right" data-aos-delay="600">
+                <i class="fas fa-chart-line"></i> Statistics
+            </a>
+            <a routerLink="/doctor/notifications" class="nav-link" data-aos="fade-right" data-aos-delay="700">
+                <i class="fas fa-bell"></i> Notifications
+            </a>
+            <button class="nav-link logout-button" (click)="logout()" data-aos="fade-right" data-aos-delay="800">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </nav>
+        <button class="dark-mode-toggle" (click)="toggleDarkMode()" aria-label="Toggle Dark Mode">
+            <span *ngIf="!isDarkMode"><i class="fas fa-moon"></i></span>
+            <span *ngIf="isDarkMode"><i class="fas fa-sun"></i></span>
+        </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" (click)="closeSidebarOnClickOutside($event)" aria-label="Availability Management">
+        <!-- Notification Bubble -->
+        <div class="notification-bubble" (click)="toggleNotifications($event)" data-aos="zoom-in">
+            <i class="fas fa-bell notification-icon"></i>
+            <span class="badge" *ngIf="recentNotifications.length > 0">{{ recentNotifications.length }}</span>
+        </div>
+        <div class="notification-dropdown" *ngIf="isNotificationsOpen" data-aos="fade-down">
+            <div class="dropdown-header">
+                <h3>Notifications</h3>
+                <button class="close-btn" (click)="toggleNotifications($event)">✕</button>
+            </div>
+            <div class="notification-list">
+                <div *ngFor="let not of recentNotifications" class="notification-item" data-tilt data-aos="fade-up">
+                    <p class="notification-message">{{ not.message }}</p>
+                    <p class="notification-time">{{ not.sentAt | date: 'short' }}</p>
+                </div>
+                <div *ngIf="recentNotifications.length === 0" class="no-data">
+                    No recent notifications.
+                </div>
+            </div>
+            <a routerLink="/doctor/notifications" class="view-all-link">View All Notifications</a>
+        </div>
+
+        <!-- Header -->
+        <header class="dashboard-header" data-aos="zoom-in">
+            <h1 class="title">Manage Your Availability</h1>
+            <p class="subtitle">Set and manage your availability slots.</p>
+        </header>
+
+        <!-- Availability Statistics -->
+        <section class="dashboard-section stats-section" data-aos="fade-up">
+            <h2 class="section-title">Availability Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="100">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#FF6B6B" stroke-width="10" fill="transparent"
+                            r="50" cx="60" cy="60"
+                            [attr.stroke-dashoffset]="calculateDashOffset(stats.totalSlots, 50)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-calendar-alt stat-icon"></i>
+                        <h3 class="stat-title">Total Slots</h3>
+                        <p class="stat-value">{{ stats.totalSlots || '0' }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="200">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#4ECDC4" stroke-width="10" fill="transparent"
+                            r="50" cx="60" cy="60"
+                            [attr.stroke-dashoffset]="calculateDashOffset(stats.availableSlots, 30)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-check-circle stat-icon"></i>
+                        <h3 class="stat-title">Available Slots</h3>
+                        <p class="stat-value">{{ stats.availableSlots || '0' }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="300">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#FF9F1C" stroke-width="10" fill="transparent"
+                            r="50" cx="60" cy="60"
+                            [attr.stroke-dashoffset]="calculateDashOffset(stats.unavailableThisWeek, 10)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-times-circle stat-icon"></i>
+                        <h3 class="stat-title">Booked This Week</h3>
+                        <p class="stat-value">{{ stats.unavailableThisWeek || '0' }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Select Date for Slots -->
+        <section class="dashboard-section" data-aos="fade-up" data-aos-delay="100">
+            <h2 class="section-title">Select Date for Availability Slots</h2>
+            <div class="flex items-center space-x-4">
+                <label class="block mb-1 font-medium text-gray-600 dark:text-gray-300">Date</label>
+                <input [(ngModel)]="selectedDate" type="date" class="form-input" [min]="today" (change)="onDateChange()"
+                    [ngClass]="{'border-red-500': isPastDateSelected}" />
+                <p *ngIf="isPastDateSelected" class="text-red-500 text-sm mt-1">
+                    Please select today or a future date.
+                </p>
+            </div>
+        </section>
+
+        <!-- Availability Slots -->
+        <section class="dashboard-section" data-aos="fade-up" data-aos-delay="100">
+            <h2 class="section-title">Your Availability Slots for {{ selectedDate }}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div *ngFor="let slot of slots"
+                    class="availability-card p-6 rounded-xl transform transition-all duration-500" data-tilt
+                    data-aos="flip-up">
+                    <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">Slot: {{ slot.slotStartTime |
+                        date: 'medium' }} - {{ slot.slotEndTime | date: 'HH:mm' }}</p>
+                    <p class="text-gray-600 dark:text-gray-400">Status: <span
+                            [ngClass]="{'text-green-600': !slot.booked}">{{
+                            slot.booked ? 'Booked' : 'Available' }}</span></p>
+                </div>
+                <div *ngIf="slots.length === 0" class="col-span-full text-center text-gray-500 dark:text-gray-400 py-4">
+                    No availability slots for this date.
+                </div>
+            </div>
+        </section>
+
+        <!-- Add New Availability Slot -->
+        <section class="dashboard-section" data-aos="fade-up" data-aos-delay="200">
+            <h2 class="section-title">Add New Availability</h2>
+            <form (ngSubmit)="addAvailability()" class="space-y-4">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-1">
+                        <label class="block mb-1 font-medium text-gray-600 dark:text-gray-300">Date</label>
+                        <input [(ngModel)]="newAvailability.date" name="date" type="date" class="form-input" required
+                            [min]="today"
+                            [ngClass]="{'valid': newAvailability.date && newAvailability.date >= today, 'border-red-500': newAvailability.date && newAvailability.date < today}" />
+                        <p *ngIf="newAvailability.date && newAvailability.date < today"
+                            class="text-red-500 text-sm mt-1">
+                            Please select today or a future date.
+                        </p>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block mb-1 font-medium text-gray-600 dark:text-gray-300">Start Time</label>
+                        <input [(ngModel)]="newAvailability.startTime" name="startTime" type="time" class="form-input"
+                            required [ngClass]="{'valid': newAvailability.startTime}" />
+                        <p *ngIf="!newAvailability.startTime" class="text-red-500 text-sm mt-1">Please select a start
+                            time.</p>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block mb-1 font-medium text-gray-600 dark:text-gray-300">End Time</label>
+                        <input [(ngModel)]="newAvailability.endTime" name="endTime" type="time" class="form-input"
+                            required [ngClass]="{'valid': newAvailability.endTime}" />
+                        <p *ngIf="!newAvailability.endTime" class="text-red-500 text-sm mt-1">Please select an end time.
+                        </p>
+                    </div>
+                </div>
+                <button type="submit" class="action-button add-button" [disabled]="!isFormValid()">
+                    Add Availability
+                </button>
+            </form>
+            <div *ngIf="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</div>
+        </section>
+    </main>
+</div>

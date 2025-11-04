@@ -1,0 +1,33 @@
+<div class="statistics" [ngClass]="{'dark-mode': isDarkMode}">
+    <h1 class="title" data-aos="fade-down">Health Statistics</h1>
+    <div class="statistics-container">
+        <section class="statistics-grid" data-aos="fade-up">
+            <div *ngFor="let stat of mockStatistics" class="statistic-card" data-tilt data-aos="flip-up"
+                data-aos-delay="100">
+                <div class="stat-header">
+                    <i class="fas stat-icon" [ngClass]="getStatIcon(stat.dataType)"></i>
+                    <p class="statistic-type">{{ stat.dataType | titlecase }}</p>
+                </div>
+                <p class="statistic-value">Value: {{ stat.value }}</p>
+                <p class="statistic-date">Date: {{ stat.date | date: 'mediumDate' }}</p>
+            </div>
+            <div *ngIf="mockStatistics.length === 0" class="no-data">
+                No statistics available.
+            </div>
+        </section>
+        <section class="charts-container" data-aos="zoom-in">
+            <div class="chart-card" data-tilt>
+                <h2>Heart Rate Trend</h2>
+                <canvas #chartCanvasHeartRate></canvas>
+            </div>
+            <div class="chart-card" data-tilt>
+                <h2>Glucose Level</h2>
+                <canvas #chartCanvasGlucose></canvas>
+            </div>
+            <div class="chart-card" data-tilt>
+                <h2>Blood Pressure</h2>
+                <canvas #chartCanvasBloodPressure></canvas>
+            </div>
+        </section>
+    </div>
+</div>

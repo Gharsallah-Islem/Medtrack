@@ -1,0 +1,51 @@
+<div class="report-upload" [ngClass]="{'dark-mode': isDarkMode}">
+    <h1 class="title" data-aos="fade-down">Upload Medical Report</h1>
+    <div class="upload-container" data-aos="zoom-in">
+        <p class="upload-instructions">Place document on a flat surface with good lighting for best results.</p>
+
+        <!-- File Input -->
+        <div class="file-upload-wrapper">
+            <input type="file" accept="image/*" (change)="onFileSelected($event)" class="file-input" id="fileInput"
+                aria-label="Upload medical report" />
+            <label for="fileInput" class="file-input-label">
+                <i class="fas fa-upload"></i> Choose File
+            </label>
+        </div>
+
+        <!-- File Preview -->
+        <div *ngIf="previewUrl" class="preview-section" data-aos="fade-up">
+            <h2 class="preview-title">Preview</h2>
+            <img [src]="previewUrl" alt="Uploaded Report Preview" class="preview-image" />
+            <button (click)="enhanceImage()" class="enhance-button">Enhance Image</button>
+        </div>
+
+        <!-- Doctor Selection -->
+        <div class="form-group">
+            <label for="doctorSearch" class="form-label">Send to Doctor</label>
+            <div class="selection-bar">
+                <input id="doctorSearch" type="text" class="form-input" placeholder="Search for a doctor..."
+                    [(ngModel)]="searchQuery" (input)="filterDoctors()" aria-label="Search for a doctor" />
+                <button *ngIf="searchQuery" (click)="clearSearch()" class="clear-button" aria-label="Clear search">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div *ngIf="filteredDoctors.length > 0 && showDropdown" class="autocomplete-dropdown" data-aos="fade-down">
+                <div *ngFor="let doctor of filteredDoctors" class="autocomplete-item" (click)="selectDoctor(doctor)">
+                    Dr. {{ doctor.username }} ({{ doctor.specialty || 'General' }})
+                </div>
+            </div>
+            <div *ngIf="selectedDoctor" class="selected-doctor" data-aos="fade-up">
+                <p>Selected: Dr. {{ selectedDoctor.username }} ({{ selectedDoctor.specialty || 'General' }})</p>
+            </div>
+            <p *ngIf="doctors.length === 0" class="no-data">No doctors available.</p>
+        </div>
+
+        <!-- Error and Upload Button -->
+        <p *ngIf="errorMessage" class="error-message" data-aos="fade-up">{{ errorMessage }}</p>
+        <button *ngIf="selectedFile && doctorId" (click)="uploadReport()" class="upload-button"
+            [disabled]="isUploading">
+            <span *ngIf="!isUploading">Send Report</span>
+            <span *ngIf="isUploading"><i class="fas fa-spinner fa-spin"></i> Uploading...</span>
+        </button>
+    </div>
+</div>

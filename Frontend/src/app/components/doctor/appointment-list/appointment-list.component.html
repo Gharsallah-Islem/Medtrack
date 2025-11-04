@@ -1,0 +1,152 @@
+<div class="appointment-list" [ngClass]="{'dark-mode': isDarkMode}">
+    <!-- WebGL Background Canvas -->
+    <canvas id="bgCanvas" class="webgl-bg"></canvas>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" [class.open]="isSidebarOpen" aria-label="Doctor Navigation">
+        <button class="sidebar-toggle" (click)="toggleSidebar($event)" aria-label="Toggle Navigation">
+            <span *ngIf="!isSidebarOpen"><i class="fas fa-bars"></i></span>
+            <span *ngIf="isSidebarOpen"><i class="fas fa-times"></i></span>
+        </button>
+        <nav class="sidebar-nav">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">MedSync</h2>
+                <p class="sidebar-subtitle">Doctor Portal</p>
+            </div>
+            <a routerLink="/doctor/dashboard" class="nav-link" data-aos="fade-right" data-aos-delay="100">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a routerLink="/doctor/appointments" class="nav-link active" data-aos="fade-right" data-aos-delay="200">
+                <i class="fas fa-calendar-check"></i> Appointments
+            </a>
+            <a routerLink="/doctor/availability" class="nav-link" data-aos="fade-right" data-aos-delay="300">
+                <i class="fas fa-clock"></i> Availability
+            </a>
+            <a routerLink="/doctor/patient-reports" class="nav-link" data-aos="fade-right" data-aos-delay="400">
+                <i class="fas fa-file-medical"></i> Patient Reports
+            </a>
+            <a routerLink="/doctor/chat" class="nav-link" data-aos="fade-right" data-aos-delay="500">
+                <i class="fas fa-comments"></i> Chat
+            </a>
+            <a routerLink="/doctor/statistics" class="nav-link" data-aos="fade-right" data-aos-delay="600">
+                <i class="fas fa-chart-line"></i> Statistics
+            </a>
+            <a routerLink="/doctor/notifications" class="nav-link" data-aos="fade-right" data-aos-delay="700">
+                <i class="fas fa-bell"></i> Notifications
+            </a>
+            <button class="nav-link logout-button" (click)="logout()" data-aos="fade-right" data-aos-delay="800">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </nav>
+        <button class="dark-mode-toggle" (click)="toggleDarkMode()" aria-label="Toggle Dark Mode">
+            <span *ngIf="!isDarkMode"><i class="fas fa-moon"></i></span>
+            <span *ngIf="isDarkMode"><i class="fas fa-sun"></i></span>
+        </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" (click)="closeSidebarOnClickOutside($event)" aria-label="Appointments List">
+        <!-- Notification Bubble -->
+        <div class="notification-bubble" (click)="toggleNotifications($event)" data-aos="zoom-in">
+            <i class="fas fa-bell notification-icon"></i>
+            <span class="badge" *ngIf="recentNotifications.length > 0">{{ recentNotifications.length }}</span>
+        </div>
+        <div class="notification-dropdown" *ngIf="isNotificationsOpen" data-aos="fade-down">
+            <div class="dropdown-header">
+                <h3>Notifications</h3>
+                <button class="close-btn" (click)="toggleNotifications($event)">✕</button>
+            </div>
+            <div class="notification-list">
+                <div *ngFor="let not of recentNotifications" class="notification-item" data-tilt data-aos="fade-up">
+                    <p class="notification-message">{{ not.message }}</p>
+                    <p class="notification-time">{{ not.sentAt | date: 'short' }}</p>
+                </div>
+                <div *ngIf="recentNotifications.length === 0" class="no-data">
+                    No recent notifications.
+                </div>
+            </div>
+            <a routerLink="/doctor/notifications" class="view-all-link">View All Notifications</a>
+        </div>
+
+        <!-- Header -->
+        <header class="dashboard-header" data-aos="zoom-in">
+            <h1 class="title">Your Appointments</h1>
+            <p class="subtitle">Manage your scheduled appointments.</p>
+        </header>
+
+        <!-- Appointment Statistics -->
+        <section class="dashboard-section stats-section" data-aos="fade-up">
+            <h2 class="section-title">Appointment Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="100">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#FF6B6B" stroke-width="10" fill="transparent"
+                            r="50" cx="60" cy="60"
+                            [attr.stroke-dashoffset]="calculateDashOffset(stats.totalAppointments, 50)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-calendar-alt stat-icon"></i>
+                        <h3 class="stat-title">Total Appointments</h3>
+                        <p class="stat-value">{{ stats.totalAppointments || '0' }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="200">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#4ECDC4" stroke-width="10" fill="transparent"
+                            r="50" cx="60" cy="60"
+                            [attr.stroke-dashoffset]="calculateDashOffset(stats.pendingApprovals, 10)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-hourglass-half stat-icon"></i>
+                        <h3 class="stat-title">Pending Approvals</h3>
+                        <p class="stat-value">{{ stats.pendingApprovals || '0' }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="300">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#FF9F1C" stroke-width="10" fill="transparent"
+                            r="50" cx="60" cy="60"
+                            [attr.stroke-dashoffset]="calculateDashOffset(stats.cancelledThisMonth, 5)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-times-circle stat-icon"></i>
+                        <h3 class="stat-title">Cancelled This Month</h3>
+                        <p class="stat-value">{{ stats.cancelledThisMonth || '0' }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Appointment List -->
+        <section class="dashboard-section" data-aos="fade-up" data-aos-delay="100">
+            <h2 class="section-title">Appointment List</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div *ngFor="let appt of appointments"
+                    class="appointment-card p-6 rounded-xl transform transition-all duration-500" data-tilt
+                    data-aos="flip-up">
+                    <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">Patient: {{ appt.patient.username
+                        }}</p>
+                    <p class="text-gray-600 dark:text-gray-400">Date: {{ appt.slot.slotStartTime | date: 'medium' }}</p>
+                    <p class="text-gray-600 dark:text-gray-400">Status: <span [ngClass]="{
+                        'text-green-600': appt.status === 'approved',
+                        'text-yellow-600': appt.status === 'pending'
+                    }">{{ appt.status }}</span></p>
+                    <div class="mt-4 flex gap-2">
+                        <button *ngIf="appt.status === 'pending'" (click)="approveAppointment(appt.id)"
+                            class="action-button approve-button">
+                            Approve
+                        </button>
+                        <button *ngIf="appt.status === 'approved'" (click)="cancelAppointment(appt.id)"
+                            class="action-button cancel-button">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+                <div *ngIf="appointments.length === 0"
+                    class="col-span-full text-center text-gray-500 dark:text-gray-400 py-4">
+                    No appointments found.
+                </div>
+            </div>
+        </section>
+    </main>
+</div>

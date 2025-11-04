@@ -1,0 +1,217 @@
+<div class="doctor-dashboard" [ngClass]="{'dark-mode': isDarkMode}">
+    <!-- WebGL Background Canvas -->
+    <canvas id="bgCanvas" class="webgl-bg"></canvas>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" [class.open]="isSidebarOpen" aria-label="Doctor Navigation">
+        <button class="sidebar-toggle" (click)="toggleSidebar($event)" aria-label="Toggle Navigation">
+            <span *ngIf="!isSidebarOpen"><i class="fas fa-bars"></i></span>
+            <span *ngIf="isSidebarOpen"><i class="fas fa-times"></i></span>
+        </button>
+        <nav class="sidebar-nav">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">MedSync</h2>
+                <p class="sidebar-subtitle">Doctor Portal</p>
+            </div>
+            <a routerLink="/doctor/dashboard" class="nav-link active" data-aos="fade-right" data-aos-delay="100">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a routerLink="/doctor/appointments" class="nav-link" data-aos="fade-right" data-aos-delay="200">
+                <i class="fas fa-calendar-check"></i> Appointments
+            </a>
+            <a routerLink="/doctor/availability" class="nav-link" data-aos="fade-right" data-aos-delay="300">
+                <i class="fas fa-clock"></i> Availability
+            </a>
+            <a routerLink="/doctor/patient-reports" class="nav-link" data-aos="fade-right" data-aos-delay="400">
+                <i class="fas fa-file-medical"></i> Patient Reports
+            </a>
+            <a routerLink="/doctor/statistics" class="nav-link" data-aos="fade-right" data-aos-delay="500">
+                <i class="fas fa-chart-line"></i> Statistics
+            </a>
+            <a routerLink="/doctor/chat" class="nav-link" data-aos="fade-right" data-aos-delay="600">
+                <i class="fas fa-comments"></i> Chat
+            </a>
+            <a routerLink="/doctor/notifications" class="nav-link" data-aos="fade-right" data-aos-delay="700">
+                <i class="fas fa-bell"></i> Notifications
+            </a>
+            <button class="nav-link logout-button" (click)="logout()" data-aos="fade-right" data-aos-delay="800">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </nav>
+        <button class="dark-mode-toggle" (click)="toggleDarkMode()" aria-label="Toggle Dark Mode">
+            <span *ngIf="!isDarkMode"><i class="fas fa-moon"></i></span>
+            <span *ngIf="isDarkMode"><i class="fas fa-sun"></i></span>
+        </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" (click)="closeSidebarOnClickOutside($event)" aria-label="Main Dashboard Content">
+        <!-- Dashboard Header -->
+        <header class="dashboard-header" data-aos="fade-down">
+            <div class="header-content">
+                <h1 class="title">Doctor Dashboard</h1>
+                <p class="subtitle">Welcome, Dr. {{ profile.firstName || 'Unknown' }} {{ profile.lastName || 'Unknown'
+                    }}</p>
+            </div>
+        </header>
+
+        <!-- Notification Bubble -->
+        <div class="notification-bubble" (click)="toggleNotifications($event)" data-aos="zoom-in">
+            <i class="fas fa-bell notification-icon"></i>
+            <span class="badge" *ngIf="recentNotifications.length > 0">{{ recentNotifications.length }}</span>
+        </div>
+        <div class="notification-dropdown" *ngIf="isNotificationsOpen" data-aos="fade-down">
+            <div class="dropdown-header">
+                <h3>Notifications</h3>
+                <button class="close-btn" (click)="toggleNotifications($event)">✕</button>
+            </div>
+            <div class="notification-list">
+                <div *ngFor="let not of recentNotifications" class="notification-item" data-tilt data-aos="fade-up">
+                    <p class="notification-message">{{ not.message }}</p>
+                    <p class="notification-time">{{ not.sentAt | date: 'short' }}</p>
+                </div>
+                <div *ngIf="recentNotifications.length === 0" class="no-data">
+                    No recent notifications.
+                </div>
+            </div>
+            <a routerLink="/doctor/notifications" class="view-all-link">View All Notifications</a>
+        </div>
+
+        <!-- Doctor Statistics -->
+        <section class="dashboard-section stats-section" data-aos="fade-up">
+            <h2 class="section-title">Doctor Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="100">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__background" stroke="#e5e7eb" stroke-width="8" fill="transparent"
+                            r="50" cx="60" cy="60" />
+                        <circle class="progress-ring__circle" stroke="#FF6B6B" stroke-width="8" fill="transparent"
+                            r="50" cx="60" cy="60"
+                            [attr.stroke-dashoffset]="calculateDashOffset(stats.appointmentsToday, 10)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-calendar-check stat-icon"></i>
+                        <h3 class="stat-title">Appointments Today</h3>
+                        <p class="stat-value">{{ stats.appointmentsToday }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="200">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__background" stroke="#e5e7eb" stroke-width="8" fill="transparent"
+                            r="50" cx="60" cy="60" />
+                        <circle class="progress-ring__circle" stroke="#4ECDC4" stroke-width="8" fill="transparent"
+                            r="50" cx="60" cy="60"
+                            [attr.stroke-dashoffset]="calculateDashOffset(stats.patientsManaged, 50)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-users stat-icon"></i>
+                        <h3 class="stat-title">Patients Managed</h3>
+                        <p class="stat-value">{{ stats.patientsManaged }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="300">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__background" stroke="#e5e7eb" stroke-width="8" fill="transparent"
+                            r="50" cx="60" cy="60" />
+                        <circle class="progress-ring__circle" stroke="#FF9F1C" stroke-width="8" fill="transparent"
+                            r="50" cx="60" cy="60"
+                            [attr.stroke-dashoffset]="calculateDashOffset(stats.reportsReviewed, 20)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-file-alt stat-icon"></i>
+                        <h3 class="stat-title">Reports Reviewed</h3>
+                        <p class="stat-value">{{ stats.reportsReviewed }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="400">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__background" stroke="#e5e7eb" stroke-width="8" fill="transparent"
+                            r="50" cx="60" cy="60" />
+                        <circle class="progress-ring__circle" stroke="#45B7D1" stroke-width="8" fill="transparent"
+                            r="50" cx="60" cy="60"
+                            [attr.stroke-dashoffset]="calculateDashOffset(stats.avgConsultationTime, 60)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-clock stat-icon"></i>
+                        <h3 class="stat-title">Avg. Consultation (min)</h3>
+                        <p class="stat-value">{{ stats.avgConsultationTime }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="500">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__background" stroke="#e5e7eb" stroke-width="8" fill="transparent"
+                            r="50" cx="60" cy="60" />
+                        <circle class="progress-ring__circle" stroke="#AB47BC" stroke-width="8" fill="transparent"
+                            r="50" cx="60" cy="60"
+                            [attr.stroke-dashoffset]="calculateDashOffset(stats.weeklyAppointments, 20)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-calendar-week stat-icon"></i>
+                        <h3 class="stat-title">Weekly Appointments</h3>
+                        <p class="stat-value">{{ stats.weeklyAppointments }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upcoming Appointments -->
+        <section class="dashboard-section" data-aos="fade-right" data-aos-delay="100">
+            <h2 class="section-title">Upcoming Appointments</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div *ngFor="let appt of upcomingAppointments"
+                    class="dashboard-card p-6 rounded-xl transform transition-all duration-500" data-tilt
+                    data-aos="flip-right">
+                    <div class="card-header">
+                        <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                            <i class="fas fa-user card-icon"></i> {{ appt.patient.username }}
+                        </p>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-calendar-alt card-icon"></i> Date: {{ appt.slotStartTime | date: 'medium'
+                            }}
+                        </p>
+                        <p class="text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-info-circle card-icon"></i> Status: {{ appt.status }}
+                        </p>
+                    </div>
+                </div>
+                <div *ngIf="upcomingAppointments.length === 0"
+                    class="col-span-full text-center text-gray-500 dark:text-gray-400 py-4">
+                    No upcoming appointments.
+                </div>
+            </div>
+            <a routerLink="/doctor/appointments" class="view-all-link" data-aos="fade-up">View All Appointments</a>
+        </section>
+
+        <!-- Recent Patient Reports -->
+        <section class="dashboard-section" data-aos="fade-left" data-aos-delay="200">
+            <h2 class="section-title">Recent Patient Reports</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div *ngFor="let report of recentReports"
+                    class="dashboard-card p-6 rounded-xl transform transition-all duration-500" data-tilt
+                    data-aos="flip-left">
+                    <div class="card-header">
+                        <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                            <i class="fas fa-user card-icon"></i> Patient: {{ report.patient.username }}
+                        </p>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-clock card-icon"></i> Sent At: {{ report.sentAt | date: 'medium' }}
+                        </p>
+                        <a [href]="report.pdfPath" target="_blank"
+                            class="text-blue-600 hover:underline dark:text-blue-400">
+                            <i class="fas fa-file-pdf card-icon"></i> View PDF
+                        </a>
+                    </div>
+                </div>
+                <div *ngIf="recentReports.length === 0"
+                    class="col-span-full text-center text-gray-500 dark:text-gray-400 py-4">
+                    No recent reports.
+                </div>
+            </div>
+            <a routerLink="/doctor/patient-reports" class="view-all-link" data-aos="fade-up">View All Reports</a>
+        </section>
+    </main>
+</div>

@@ -1,0 +1,11 @@
+<header>
+    <div class="container">
+        <a routerLink="/" class="logo">MedTrack</a>
+        <nav>
+            <a *ngIf="authService.isLoggedIn()" routerLink="/{{authService.getUserRole()}}/dashboard">Dashboard</a>
+            <a *ngIf="authService.isLoggedIn()" (click)="logout()">Logout</a>
+            <a *ngIf="!authService.isLoggedIn()" routerLink="/auth/login">Login</a>
+            <a *ngIf="!authService.isLoggedIn()" routerLink="/auth/signup">Signup</a>
+        </nav>
+    </div>
+</header>

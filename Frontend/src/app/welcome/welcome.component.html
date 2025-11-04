@@ -1,0 +1,278 @@
+<nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+    <a href="#home" class="logo">MedTrack</a>
+    <ul id="nav-links">
+        <li><a href="#home" (click)="scrollToSection('home')">Home</a></li>
+        <li><a href="#features" (click)="scrollToSection('features')">Features</a></li>
+        <li><a href="#how-it-works" (click)="scrollToSection('how-it-works')">How It Works</a></li>
+        <li><a href="#why-medtrack" (click)="scrollToSection('why-medtrack')">Why MedTrack</a></li>
+        <li><a href="#testimonials" (click)="scrollToSection('testimonials')">Testimonials</a></li>
+        <li>
+            <button class="theme-toggle" (click)="toggleTheme()" aria-label="Toggle dark mode">
+                <span *ngIf="!isDarkMode">🌙</span>
+                <span *ngIf="isDarkMode">☀️</span>
+            </button>
+        </li>
+    </ul>
+    <div class="hamburger" (click)="toggleMenu()" aria-label="Toggle mobile menu">
+        <i class="fas fa-bars"></i>
+    </div>
+</nav>
+
+<section class="hero" id="home" role="banner">
+    <video autoplay loop muted playsinline class="hero-video" aria-hidden="true">
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-doctors-with-masks-in-a-hospital-42350-small.mp4"
+            type="video/mp4">
+    </video>
+    <canvas id="hero-3d-canvas" aria-hidden="true"></canvas>
+    <div class="hero-overlay" aria-hidden="true"></div>
+
+    <div class="hero-content" data-tilt>
+        <h1 data-aos="zoom-in">Empowering Your Health Journey</h1>
+        <p data-aos="fade-up" data-aos-delay="200">
+            Discover seamless medication management, secure records, and expert care at your fingertips.
+        </p>
+        <form class="hero-search" aria-label="Search for doctors or services">
+            <input type="text" placeholder="Search for Doctors, Specialists, or Conditions" aria-label="Search query">
+            <button type="submit" class="btn hero-btn" data-aos="fade-up" data-aos-delay="400">Search</button>
+        </form>
+        <button class="btn hero-btn secondary" data-aos="fade-up" data-aos-delay="600" (click)="goToSignup()">
+            Sign Up for Free
+        </button>
+    </div>
+</section>
+
+<section class="features" id="features">
+    <h2 data-aos="fade-up">Discover MedTrack's Innovative Features</h2>
+    <div class="feature-grid">
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="100" data-tilt>
+            <canvas class="feature-3d-canvas" id="feature-bell" aria-hidden="true"></canvas>
+            <img src="https://cdn-icons-png.flaticon.com/512/2621/2621855.png" alt="Smart reminders icon"
+                class="feature-icon">
+            <h3>Intelligent Reminders</h3>
+            <p>Personalized AI notifications to keep your health on track.</p>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="200" data-tilt>
+            <canvas class="feature-3d-canvas" id="feature-report" aria-hidden="true"></canvas>
+            <img src="https://media.istockphoto.com/id/542098686/vector/vault-single-icon.jpg?s=612x612&w=0&k=20&c=lYYUnCgSU-9EA8PredJUjlgslTw1MN5yQqNNuriJy38="
+                alt="Secure health vault icon" class="feature-icon">
+            <h3>Secure Digital Vault</h3>
+            <p>HIPAA-compliant encryption for your medical records.</p>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="300" data-tilt>
+            <canvas class="feature-3d-canvas" id="feature-calendar" aria-hidden="true"></canvas>
+            <img src="https://media.istockphoto.com/id/1278801008/vector/calendar-and-check-mark-vector-icon.jpg?s=612x612&w=0&k=20&c=mb3TThoC0BJiFFB3JcwMPkTZULhSn5osrHK3o3gDUxg="
+                alt="Seamless booking calendar icon" class="feature-icon">
+            <h3>Effortless Appointments</h3>
+            <p>Book with verified specialists in seconds.</p>
+        </div>
+    </div>
+</section>
+
+<section class="how-it-works" id="how-it-works">
+    <h2 data-aos="fade-up">Start Your Wellness Path Today</h2>
+    <div class="progress-bar">
+        <div class="progress"></div>
+    </div>
+    <div class="steps-container">
+        <div class="step" data-aos="fade-right" data-aos-delay="100" data-tilt>
+            <img src="https://cdn-icons-png.flaticon.com/512/6364/6364343.png" alt="Register icon" class="step-icon">
+            <div class="step-number">1</div>
+            <h3>Sign Up Securely</h3>
+            <p>Join in minutes with robust privacy protection.</p>
+        </div>
+        <div class="step" data-aos="fade-up" data-aos-delay="200" data-tilt>
+            <img src="https://cdn-icons-png.flaticon.com/512/2099/2099085.png" alt="Customize icon" class="step-icon">
+            <div class="step-number">2</div>
+            <h3>Tailor Your Profile</h3>
+            <p>Add health details for personalized insights.</p>
+        </div>
+        <div class="step" data-aos="fade-left" data-aos-delay="300" data-tilt>
+            <img src="https://cdn-icons-png.flaticon.com/512/2972/2972185.png" alt="Thrive icon" class="step-icon">
+            <div class="step-number">3</div>
+            <h3>Achieve Optimal Health</h3>
+            <p>Manage care with confidence and ease.</p>
+        </div>
+    </div>
+</section>
+
+<section class="why-medtrack" id="why-medtrack">
+    <h2 data-aos="fade-up">Why Choose MedTrack?</h2>
+    <div class="why-grid">
+        <div class="why-card" data-aos="fade-up" data-aos-delay="100">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Patient-centered icon"
+                class="why-icon">
+            <h3>Patient-Centered Design</h3>
+            <p>Intuitive interface focused on user experience.</p>
+        </div>
+        <div class="why-card" data-aos="fade-up" data-aos-delay="200">
+            <img src="https://cdn-icons-png.flaticon.com/512/744/744465.png" alt="Recognition icon" class="why-icon">
+            <h3>Industry Recognition</h3>
+            <p>Trusted by healthcare professionals worldwide.</p>
+        </div>
+        <div class="why-card" data-aos="fade-up" data-aos-delay="300">
+            <img src="https://cdn-icons-png.flaticon.com/512/263/263142.png" alt="Collaboration icon" class="why-icon">
+            <h3>Collaborative Care</h3>
+            <p>Connect patients and providers seamlessly.</p>
+        </div>
+        <div class="why-card" data-aos="fade-up" data-aos-delay="400">
+            <img src="https://cdn-icons-png.flaticon.com/512/3163/3163470.png" alt="Innovation icon" class="why-icon">
+            <h3>Cutting-Edge Innovation</h3>
+            <p>AI-driven tools for better health outcomes.</p>
+        </div>
+    </div>
+</section>
+
+<section class="testimonials" id="testimonials">
+    <h2 data-aos="fade-up">Hear From Our Community</h2>
+    <div class="testimonial-slider">
+        <canvas id="testimonial-3d-canvas" aria-hidden="true"></canvas>
+        <div class="testimonial-card active" data-aos="zoom-in" data-aos-delay="100">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Jane Doe, Patient" class="user-avatar">
+            <p>“MedTrack has transformed how I manage my daily medications—truly life-changing!”</p>
+            <span>- Jane Doe, Patient</span>
+        </div>
+        <div class="testimonial-card" data-aos="zoom-in" data-aos-delay="200">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Dr. John Smith, Physician"
+                class="user-avatar">
+            <p>“An essential platform for improving patient engagement and care efficiency.”</p>
+            <span>- Dr. John Smith, Physician</span>
+        </div>
+        <div class="testimonial-card" data-aos="zoom-in" data-aos-delay="300">
+            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Alex Johnson, Patient" class="user-avatar">
+            <p>“The secure vault and booking system have saved me countless hours.”</p>
+            <span>- Alex Johnson, Patient</span>
+        </div>
+        <div class="testimonial-card" data-aos="zoom-in" data-aos-delay="400">
+            <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Dr. Emily Carter, Specialist"
+                class="user-avatar">
+            <p>“Reliable, secure, and user-friendly—perfect for modern healthcare.”</p>
+            <span>- Dr. Emily Carter, Specialist</span>
+        </div>
+        <button class="slider-btn prev" (click)="prevTestimonial()" aria-label="Previous testimonial"><i
+                class="fas fa-chevron-left"></i></button>
+        <button class="slider-btn next" (click)="nextTestimonial()" aria-label="Next testimonial"><i
+                class="fas fa-chevron-right"></i></button>
+    </div>
+</section>
+
+<section class="statistics">
+    <h2 data-aos="fade-up">MedTrack in Numbers</h2>
+    <div class="stats-grid">
+        <div class="stat" data-aos="fade-up" data-aos-delay="100">
+            <img src="https://cdn-icons-png.flaticon.com/512/681/681494.png" alt="Users icon" class="stat-icon">
+            <h3><span class="counter" data-target="75000">0</span>+</h3>
+            <p>Active Users</p>
+        </div>
+        <div class="stat" data-aos="fade-up" data-aos-delay="200">
+            <img src="https://cdn-icons-png.flaticon.com/512/2203/2203145.png" alt="Professionals icon"
+                class="stat-icon">
+            <h3><span class="counter" data-target="1500">0</span>+</h3>
+            <p>Healthcare Professionals</p>
+        </div>
+        <div class="stat" data-aos="fade-up" data-aos-delay="300">
+            <img src="https://cdn-icons-png.flaticon.com/512/951/951815.png" alt="Uptime icon" class="stat-icon">
+            <h3>99.9%</h3>
+            <p>Platform Uptime</p>
+        </div>
+    </div>
+</section>
+
+<section class="trust-badges">
+    <h2 data-aos="fade-up">Our Certifications</h2>
+    <div class="badges">
+        <img src="https://www.hipaajournal.com/wp-content/uploads/2024/10/Badge_HIPAA-Compliant-Logo.png"
+            alt="HIPAA Compliant" class="badge-image" data-aos="zoom-in" data-aos-delay="100">
+        <img src="https://img.freepik.com/premium-vector/secure-ssl-encryption-logo-secure-connection-icon-vector-illustration-ssl-certificate-icon_526569-865.jpg"
+            alt="SSL Secured" class="badge-image" data-aos="zoom-in" data-aos-delay="200">
+        <img src="https://www.shutterstock.com/image-vector/gdpr-compliant-compliance-general-data-2501566973.jpg"
+            alt="GDPR Compliant" class="badge-image" data-aos="zoom-in" data-aos-delay="300">
+        <img src="https://thumbs.dreamstime.com/b/iso-certified-quality-management-system-emblem-golden-badge-representing-medical-devices-industry-standards-regulatory-304515290.jpg"
+            alt="ISO Certified" class="badge-image" data-aos="zoom-in" data-aos-delay="400">
+    </div>
+</section>
+
+<section class="blog-teaser">
+    <h2 data-aos="fade-up">Latest Health Insights</h2>
+    <div class="blog-grid">
+        <div class="blog-card" data-aos="fade-up" data-aos-delay="100">
+            <img src="https://images.unsplash.com/photo-1576091160399-112ba13515ca" alt="Blog post 1"
+                class="blog-image">
+            <h3>Top Tips for Medication Adherence</h3>
+            <p>Learn how to stay on top of your prescriptions effectively.</p>
+            <a href="#" class="blog-link">Read More</a>
+        </div>
+        <div class="blog-card" data-aos="fade-up" data-aos-delay="200">
+            <img src="https://images.unsplash.com/photo-1587370560942-ad2a04eabb6d" alt="Blog post 2"
+                class="blog-image">
+            <h3>Choosing the Right Specialist</h3>
+            <p>Guide to finding the best doctor for your needs.</p>
+            <a href="#" class="blog-link">Read More</a>
+        </div>
+        <div class="blog-card" data-aos="fade-up" data-aos-delay="300">
+            <img src="https://images.unsplash.com/photo-1587370560942-ad2a04eabb6d" alt="Blog post 3"
+                class="blog-image">
+            <h3>The Future of Digital Health</h3>
+            <p>Explore emerging trends in healthcare technology.</p>
+            <a href="#" class="blog-link">Read More</a>
+        </div>
+    </div>
+</section>
+
+<section class="faq">
+    <h2 data-aos="fade-up">Frequently Asked Questions</h2>
+    <div class="faq-container">
+        <details class="faq-item" data-aos="fade-up" data-aos-delay="100">
+            <summary>How secure is my data?</summary>
+            <p>We use bank-level encryption and comply with HIPAA and GDPR standards.</p>
+        </details>
+        <details class="faq-item" data-aos="fade-up" data-aos-delay="200">
+            <summary>Can I share records with my doctor?</summary>
+            <p>Yes, easily share secure links or export reports directly.</p>
+        </details>
+        <details class="faq-item" data-aos="fade-up" data-aos-delay="300">
+            <summary>Is MedTrack free to use?</summary>
+            <p>Basic features are free, with premium options for advanced tools.</p>
+        </details>
+        <details class="faq-item" data-aos="fade-up" data-aos-delay="400">
+            <summary>How do reminders work?</summary>
+            <p>Our AI analyzes your schedule and sends timely, customizable notifications.</p>
+        </details>
+    </div>
+</section>
+
+<section class="final-cta">
+    <div class="cta-content" data-tilt>
+        <h2 data-aos="fade-up">Ready to Transform Your Health Management?</h2>
+        <p data-aos="fade-up" data-aos-delay="200">Join the thousands already benefiting from MedTrack's cutting-edge
+            platform.</p>
+        <button class="btn cta-btn" data-aos="fade-up" data-aos-delay="400" (click)="goToSignup()">
+            Get Started Today
+        </button>
+    </div>
+    <img src="https://img.freepik.com/free-vector/healthy-lifestyle-diet-fitness-vector-sign-shape-heart-with-multiple-icons-depicting-various-sports-vegetables-cereals-seafood-meat-fruit-sleep-weight-beverages_1284-44073.jpg"
+        alt="Healthy lifestyle illustration" class="cta-image" aria-hidden="true">
+</section>
+
+<footer class="footer" role="contentinfo">
+    <div class="footer-content">
+        <div class="footer-brand">
+            <h3>MedTrack</h3>
+            <p>Your Trusted Health Companion</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">Contact Us</a> | <a
+                href="#">Accessibility</a>
+        </div>
+        <div class="social-links">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <div class="newsletter">
+            <input type="email" placeholder="Subscribe to Health Tips" aria-label="Email for newsletter">
+            <button>Subscribe</button>
+        </div>
+        <p>© 2025 MedTrack. All Rights Reserved.</p>
+    </div>
+</footer>

@@ -1,0 +1,138 @@
+<div class="admin-dashboard" [ngClass]="{'dark-mode': isDarkMode}">
+    <!-- WebGL Background Canvas -->
+    <canvas id="bgCanvas" class="webgl-bg"></canvas>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" [class.open]="isSidebarOpen" aria-label="Admin Navigation">
+        <button class="sidebar-toggle" (click)="toggleSidebar($event)" aria-label="Toggle Navigation">
+            <span *ngIf="!isSidebarOpen"><i class="fas fa-bars"></i></span>
+            <span *ngIf="isSidebarOpen"><i class="fas fa-times"></i></span>
+        </button>
+        <nav class="sidebar-nav">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">MedTrack</h2>
+                <p class="sidebar-subtitle">Admin Portal</p>
+            </div>
+            <a routerLink="/admin/dashboard" class="nav-link active" data-aos="fade-right" data-aos-delay="100">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a routerLink="/admin/statistics" class="nav-link" data-aos="fade-right" data-aos-delay="200">
+                <i class="fas fa-chart-line"></i> Statistics
+            </a>
+            <a routerLink="/admin/user-management" class="nav-link" data-aos="fade-right" data-aos-delay="300">
+                <i class="fas fa-users-cog"></i> User Management
+            </a>
+            <a routerLink="/admin/settings" class="nav-link" data-aos="fade-right" data-aos-delay="600">
+                <i class="fas fa-cogs"></i> Settings
+            </a>
+            <button class="nav-link logout-button" (click)="logout()" data-aos="fade-right" data-aos-delay="700">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </nav>
+        <button class="dark-mode-toggle" (click)="toggleDarkMode()" aria-label="Toggle Dark Mode">
+            <span *ngIf="!isDarkMode"><i class="fas fa-moon"></i></span>
+            <span *ngIf="isDarkMode"><i class="fas fa-sun"></i></span>
+        </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" (click)="closeSidebarOnClickOutside($event)" aria-label="Main Dashboard Content">
+        <!-- Notification Bubble -->
+        <div class="notification-bubble" (click)="toggleNotifications($event)" data-aos="zoom-in">
+            <i class="fas fa-bell notification-icon"></i>
+            <span class="badge" *ngIf="pendingActions.length > 0">{{ pendingActions.length }}</span>
+        </div>
+        <div class="notification-dropdown" *ngIf="isNotificationsOpen" data-aos="fade-down">
+            <div class="dropdown-header">
+                <h3>Pending Actions</h3>
+                <button class="close-btn" (click)="toggleNotifications($event)">✕</button>
+            </div>
+            <div class="notification-list">
+                <div *ngFor="let action of pendingActions" class="notification-item" data-tilt data-aos="fade-up">
+                    <p class="notification-message">{{ action.message }}</p>
+                    <p class="notification-time">{{ action.createdAt | date: 'short' }}</p>
+                </div>
+                <div *ngIf="pendingActions.length === 0" class="no-data">
+                    No pending actions.
+                </div>
+            </div>
+            <a routerLink="/admin/pending-actions" class="view-all-link">View All Pending Actions</a>
+        </div>
+
+        <!-- Header -->
+        <header class="dashboard-header" data-aos="zoom-in">
+            <h1 class="title">Admin Dashboard</h1>
+            <p class="subtitle">Manage and Monitor MedTrack Operations</p>
+        </header>
+
+        <!-- Quick Statistics -->
+        <section class="dashboard-section stats-section" data-aos="fade-up">
+            <h2 class="section-title">Quick Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="100">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__background" stroke-width="10" fill="transparent" r="50" cx="60"
+                            cy="60" />
+                        <circle class="progress-ring__circle" stroke-width="10" fill="transparent" r="50" cx="60"
+                            cy="60" [attr.stroke-dashoffset]="calculateDashOffset(totalUsers, 1000)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-users stat-icon"></i>
+                        <h3 class="stat-title">Total Users</h3>
+                        <p class="stat-value">{{ totalUsers || '0' }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="200">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__background" stroke-width="10" fill="transparent" r="50" cx="60"
+                            cy="60" />
+                        <circle class="progress-ring__circle" stroke-width="10" fill="transparent" r="50" cx="60"
+                            cy="60" [attr.stroke-dashoffset]="calculateDashOffset(totalDoctors, 100)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-user-md stat-icon"></i>
+                        <h3 class="stat-title">Total Doctors</h3>
+                        <p class="stat-value">{{ totalDoctors || '0' }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="300">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__background" stroke-width="10" fill="transparent" r="50" cx="60"
+                            cy="60" />
+                        <circle class="progress-ring__circle" stroke-width="10" fill="transparent" r="50" cx="60"
+                            cy="60" [attr.stroke-dashoffset]="calculateDashOffset(totalPatients, 1000)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-user-injured stat-icon"></i>
+                        <h3 class="stat-title">Total Patients</h3>
+                        <p class="stat-value">{{ totalPatients || '0' }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="action-links">
+                <a routerLink="/admin/user-management" class="view-all-link" data-aos="fade-up">Manage Users</a>
+                <button class="action-btn" (click)="approvePendingUsers()" data-aos="fade-up" data-aos-delay="100">
+                    Approve Pending Users
+                </button>
+            </div>
+        </section>
+
+        <!-- Recent System Statistics -->
+        <section class="dashboard-section" data-aos="fade-right" data-aos-delay="100">
+            <h2 class="section-title">Recent System Statistics</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div *ngFor="let stat of recentStatistics" class="dashboard-card" data-tilt data-aos="flip-left">
+                    <p class="card-title">{{ stat.dataType }}</p>
+                    <p class="card-detail">Value: {{ stat.value }}</p>
+                    <p class="card-detail">Date: {{ stat.date | date: 'medium' }}</p>
+                </div>
+                <div *ngIf="recentStatistics.length === 0" class="col-span-full no-data">
+                    No recent statistics available.
+                </div>
+            </div>
+            <a routerLink="/admin/statistics" class="view-all-link" data-aos="fade-up">View All Statistics</a>
+        </section>
+
+      
+    </main>
+</div>

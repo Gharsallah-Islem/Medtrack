@@ -1,0 +1,13 @@
+<div class="notifications">
+    <h1 class="title" data-aos="fade-down">Your Notifications</h1>
+    <div class="notifications-list">
+        <div *ngFor="let not of notifications" class="notification-card" data-tilt data-aos="flip-left">
+            <p class="notification-message">{{ not.message }}</p>
+            <p class="notification-time">{{ not.sentAt | date: 'medium' }}</p>
+            <p class="notification-type">Type: {{ not.type }}</p>
+        </div>
+        <div *ngIf="notifications.length === 0" class="no-data">
+            No notifications available.
+        </div>
+    </div>
+</div>

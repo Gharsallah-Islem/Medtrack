@@ -1,0 +1,18 @@
+footer {
+    background: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    border-top: 1px solid #444;
+    animation: fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

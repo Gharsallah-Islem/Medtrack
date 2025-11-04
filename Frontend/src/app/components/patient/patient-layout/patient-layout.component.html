@@ -1,0 +1,84 @@
+<div class="patient-layout" [ngClass]="{'dark-mode': isDarkMode}">
+  <aside class="sidebar" [class.open]="isSidebarOpen" aria-label="Patient Navigation">
+    <button class="sidebar-toggle" (click)="toggleSidebar($event)" aria-label="Toggle Navigation">
+      <span *ngIf="!isSidebarOpen"><i class="fas fa-bars"></i></span>
+      <span *ngIf="isSidebarOpen"><i class="fas fa-times"></i></span>
+    </button>
+    <nav class="sidebar-nav">
+      <div class="sidebar-header">
+        <h2 class="sidebar-title">MedTrack</h2>
+        <p class="sidebar-subtitle">Health Hub</p>
+      </div>
+      <a routerLink="/patient/dashboard" class="nav-link" data-aos="fade-right" data-aos-delay="100">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+      </a>
+      <a routerLink="/patient/medications" class="nav-link" data-aos="fade-right" data-aos-delay="200">
+        <i class="fas fa-pills"></i> Medications
+      </a>
+      <a routerLink="/patient/appointments" class="nav-link" data-aos="fade-right" data-aos-delay="300">
+        <i class="fas fa-calendar-alt"></i> Appointments
+      </a>
+      <a routerLink="/patient/report-upload" class="nav-link" data-aos="fade-right" data-aos-delay="400">
+        <i class="fas fa-upload"></i> Upload Report
+      </a>
+      <a routerLink="/patient/chat" class="nav-link" data-aos="fade-right" data-aos-delay="500">
+        <i class="fas fa-comments"></i> Chat with Doctor
+      </a>
+      <a routerLink="/patient/doctor-ratings" class="nav-link" data-aos="fade-right" data-aos-delay="600">
+        <i class="fas fa-star"></i> Rate Doctor
+      </a>
+      <a routerLink="/patient/statistics" class="nav-link" data-aos="fade-right" data-aos-delay="700">
+        <i class="fas fa-chart-line"></i> Statistics
+      </a>
+      <a routerLink="/patient/notifications" class="nav-link" data-aos="fade-right" data-aos-delay="800">
+        <i class="fas fa-bell"></i> Notifications
+      </a>
+      <button class="nav-link logout-button" (click)="logout()" data-aos="fade-right" data-aos-delay="900">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </nav>
+    <button class="dark-mode-toggle" (click)="toggleDarkMode()" aria-label="Toggle Theme">
+      <span *ngIf="!isDarkMode"><i class="fas fa-moon"></i></span>
+      <span *ngIf="isDarkMode"><i class="fas fa-sun"></i></span>
+    </button>
+  </aside>
+  <main class="main-content" (click)="closeSidebarOnClickOutside($event)" aria-label="Main Content Area">
+    <router-outlet></router-outlet>
+  </main>
+  <button class="chatbot-button" (click)="toggleChat()" data-aos="zoom-in" aria-label="Open Health Assistant">
+    <i class="fas fa-comment-medical"></i>
+  </button>
+  <div class="chat-window" [class.minimized]="isChatMinimized" *ngIf="isChatOpen" cdkDrag
+    cdkDragRootElement=".chat-window" aria-label="Health Assistant Chat">
+    <div class="chat-header">
+      <span>Health Assistant</span>
+      <div class="chat-controls">
+        <button (click)="toggleMinimize()" class="minimize-button" aria-label="Minimize Chat">
+          <i class="fas" [ngClass]="{'fa-minus': !isChatMinimized, 'fa-plus': isChatMinimized}"></i>
+        </button>
+        <button (click)="toggleChat()" class="close-button" aria-label="Close Chat">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <div class="chat-body" #chatBody>
+      <div *ngFor="let msg of chatMessages" class="chat-message" [class.user]="msg.sender === 'user'"
+        [class.assistant]="msg.sender === 'assistant'">
+        <p>{{ msg.message }}</p>
+      </div>
+      <div *ngIf="AILoading" class="typing-indicator">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-input">
+      <input type="text" [(ngModel)]="AIQuestion" placeholder="Ask me anything..." (keyup.enter)="handleAIQuestion()"
+        aria-label="Chat Input" />
+      <button (click)="startVoiceInput()" class="voice-button" aria-label="Voice Input">
+        <i class="fas fa-microphone"></i>
+      </button>
+      <button (click)="handleAIQuestion()" class="send-button" aria-label="Send Message">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</div>

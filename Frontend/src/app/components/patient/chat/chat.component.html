@@ -1,0 +1,62 @@
+<div class="chat-container">
+  <!-- Header -->
+  <h1 class="title" data-aos="fade-down">Doctor Chat</h1>
+
+  <!-- Doctor List Sidebar -->
+  <section class="doctor-list" data-aos="fade-up">
+    <h2 class="section-title">Doctors</h2>
+    <div class="doctor-search">
+      <input type="text" class="search-input" placeholder="Search doctors..." />
+    </div>
+    <div class="doctor-items">
+      <div *ngFor="let doctor of doctors" class="doctor-item"
+        [ngClass]="{'active': doctor.id === doctorId, 'unread': hasUnreadMessages(doctor.id)}"
+        (click)="selectDoctor(doctor.id)">
+        <div class="doctor-avatar">
+          <div class="avatar" [style.background]="getAvatarColor(doctor.id)"></div>
+        </div>
+        <div class="doctor-info">
+          <h3 class="doctor-name">{{ doctor.username }}</h3>
+          <p class="doctor-specialty">{{ doctor.specialty || 'General Practitioner' }}</p>
+          <p class="doctor-last-message">Last message: {{ getLastMessage(doctor.id) || 'No messages yet' }}</p>
+        </div>
+        <span *ngIf="hasUnreadMessages(doctor.id)" class="unread-dot"></span>
+      </div>
+      <div *ngIf="doctors.length === 0" class="no-data">
+        No doctors available.
+      </div>
+    </div>
+  </section>
+
+  <!-- Chat Interface -->
+  <section class="chat-section" data-aos="fade-up">
+    <div class="chat-header">
+      <div class="doctor-avatar">
+        <div class="avatar" [style.background]="doctorId ? getAvatarColor(doctorId) : '#ccc'"></div>
+      </div>
+      <div class="doctor-info">
+        <h2 class="section-title">Chat with Dr. {{ doctorName || 'Select a Doctor' }}</h2>
+        <p class="doctor-status">{{ doctorSpecialty || 'Specialty not available' }}</p>
+      </div>
+    </div>
+    <div class="messages-container" #messagesContainer>
+      <div *ngFor="let msg of messages" class="message"
+        [ngClass]="{'sent': msg.sender.id === patientId, 'received': msg.sender.id !== patientId, 'unread': !msg.read && msg.sender.id !== patientId}">
+        <div class="message-content">
+          <p class="message-text">{{ msg.message }}</p>
+          <p class="message-time">{{ msg.timestamp | date: 'shortTime' }}</p>
+        </div>
+      </div>
+      <div *ngIf="messages.length === 0" class="no-data">
+        No messages yet. Start a conversation!
+      </div>
+    </div>
+    <form (ngSubmit)="sendMessage()" class="message-form">
+      <input [(ngModel)]="newMessage" name="newMessage" class="message-input" placeholder="Type a message..." required
+        [disabled]="!doctorId" />
+      <button type="submit" class="send-button" [disabled]="!doctorId">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </form>
+  </section>
+</div>

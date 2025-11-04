@@ -1,0 +1,22 @@
+# Root .gitignore for MedTrack project
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Environment files
+.env
+.env.local
+*.local
+
+# Build artifacts
+target/
+dist/
+node_modules/
+uploads/

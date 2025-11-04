@@ -1,0 +1,136 @@
+<div class="notifications" [ngClass]="{'dark-mode': isDarkMode}">
+    <!-- WebGL Background Canvas -->
+    <canvas id="bgCanvas" class="webgl-bg"></canvas>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" [class.open]="isSidebarOpen" aria-label="Sidebar Navigation">
+        <button class="sidebar-toggle" (click)="toggleSidebar($event)" aria-label="Toggle Sidebar">
+            <span *ngIf="!isSidebarOpen">☰</span>
+            <span *ngIf="isSidebarOpen">✕</span>
+        </button>
+        <nav class="sidebar-nav">
+            <a routerLink="/doctor/dashboard" class="nav-link" data-aos="fade-right" data-aos-delay="100">Dashboard</a>
+            <a routerLink="/doctor/appointments" class="nav-link" data-aos="fade-right"
+                data-aos-delay="200">Appointments</a>
+            <a routerLink="/doctor/availability" class="nav-link" data-aos="fade-right"
+                data-aos-delay="300">availability
+            </a>
+            <a routerLink="/doctor/patient-reports" class="nav-link" data-aos="fade-right" data-aos-delay="300">Patient
+                Reports</a>
+            <a routerLink="/doctor/chat" class="nav-link" data-aos="fade-right" data-aos-delay="300">Chat
+            </a>
+            <a routerLink="/doctor/statistics" class="nav-link" data-aos="fade-right" data-aos-delay="500">Statistics</a>
+            <button class="nav-link logout-button" (click)="logout()" data-aos="fade-right"
+                data-aos-delay="500">Logout</button>
+        </nav>
+        <button class="dark-mode-toggle" (click)="toggleDarkMode()" aria-label="Toggle Dark Mode">
+            <span *ngIf="!isDarkMode">🌙</span>
+            <span *ngIf="isDarkMode">☀️</span>
+        </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" (click)="closeSidebarOnClickOutside($event)" aria-label="Notifications">
+        <!-- Notification Bubble -->
+        <div class="notification-bubble" (click)="toggleNotifications($event)" data-aos="zoom-in">
+            <i class="fas fa-bell notification-icon"></i>
+            <span class="badge" *ngIf="recentNotifications.length > 0">{{ recentNotifications.length }}</span>
+        </div>
+        <div class="notification-dropdown" *ngIf="isNotificationsOpen" data-aos="fade-down">
+            <div class="dropdown-header">
+                <h3>Notifications</h3>
+                <button class="close-btn" (click)="toggleNotifications($event)">✕</button>
+            </div>
+            <div class="notification-list">
+                <div *ngFor="let not of recentNotifications" class="notification-item" data-tilt data-aos="fade-up">
+                    <p class="notification-message">{{ not.message }}</p>
+                    <p class="notification-time">{{ not.sentAt | date: 'short' }}</p>
+                </div>
+                <div *ngIf="recentNotifications.length === 0" class="no-data">
+                    No recent notifications.
+                </div>
+            </div>
+            <a routerLink="/doctor/notifications" class="view-all-link">View All Notifications</a>
+        </div>
+
+        <!-- Header -->
+        <header class="dashboard-header" data-aos="zoom-in">
+            <h1 class="title">Notifications</h1>
+            <p class="subtitle">Stay updated with your latest alerts.</p>
+        </header>
+
+        <!-- Notification Statistics -->
+        <section class="dashboard-section stats-section" data-aos="fade-up">
+            <h2 class="section-title">Notification Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="100">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#FF6B6B" stroke-width="10" fill="transparent"
+                            r="50" cx="60" cy="60"
+                            [attr.stroke-dashoffset]="calculateDashOffset(stats.totalNotifications, 50)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-bell stat-icon"></i>
+                        <h3 class="stat-title">Total Notifications</h3>
+                        <p class="stat-value">{{ stats.totalNotifications || '0' }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="200">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#4ECDC4" stroke-width="10" fill="transparent"
+                            r="50" cx="60" cy="60"
+                            [attr.stroke-dashoffset]="calculateDashOffset(stats.unreadNotifications, 20)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-envelope stat-icon"></i>
+                        <h3 class="stat-title">Unread Notifications</h3>
+                        <p class="stat-value">{{ stats.unreadNotifications || '0' }}</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-tilt data-aos="flip-up" data-aos-delay="300">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="#FF9F1C" stroke-width="10" fill="transparent"
+                            r="50" cx="60" cy="60"
+                            [attr.stroke-dashoffset]="calculateDashOffset(stats.notificationsToday, 10)" />
+                    </svg>
+                    <div class="stat-content">
+                        <i class="fas fa-calendar-day stat-icon"></i>
+                        <h3 class="stat-title">Notifications Today</h3>
+                        <p class="stat-value">{{ stats.notificationsToday || '0' }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Notifications List -->
+        <section class="dashboard-section" data-aos="fade-up" data-aos-delay="100">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="section-title">Your Notifications</h2>
+                <button *ngIf="stats.unreadNotifications > 0" (click)="markAllAsRead()"
+                    class="action-button mark-all-button">
+                    Mark All as Read
+                </button>
+            </div>
+            <div class="space-y-6">
+                <div *ngFor="let not of notifications"
+                    class="notification-card p-6 rounded-xl transform transition-all duration-500" data-tilt
+                    data-aos="flip-up" [ngClass]="{
+                    'info-card': not.type === 'info',
+                    'warning-card': not.type === 'warning',
+                    'error-card': not.type === 'error'
+                }">
+                    <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">{{ not.message }}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Sent At: {{ not.sentAt | date: 'medium' }}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Type: {{ not.type }}</p>
+                    <button *ngIf="!not.read" (click)="markAsRead(not.id)" class="action-button read-button">
+                        Mark as Read
+                    </button>
+                    <span *ngIf="not.read" class="mt-2 text-sm text-green-600 dark:text-green-400">Read</span>
+                </div>
+                <div *ngIf="notifications.length === 0" class="text-center text-gray-500 dark:text-gray-400 py-4">
+                    No notifications available.
+                </div>
+            </div>
+        </section>
+    </main>
+</div>

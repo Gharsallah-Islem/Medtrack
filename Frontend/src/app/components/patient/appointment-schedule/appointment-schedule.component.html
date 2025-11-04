@@ -1,0 +1,124 @@
+<div class="appointment-schedule" [ngClass]="{'dark-mode': isDarkMode}">
+    <h1 class="title" data-aos="fade-down">Appointment Scheduler</h1>
+
+    <!-- Current Appointments -->
+    <section class="appointments-section" data-aos="fade-up">
+        <h2 class="section-title">Your Appointments</h2>
+        <div class="appointments-grid">
+            <div *ngFor="let appt of appointments" class="appointment-card" data-tilt>
+                <div class="appointment-header">
+                    <h3 class="appointment-doctor">Dr. {{ appt.doctorName || 'Unknown' }}</h3>
+                    <span class="appointment-status"
+                        [ngClass]="{'pending': appt.status === 'pending', 'approved': appt.status === 'approved', 'completed': appt.status === 'completed'}">
+                        {{ appt.status | titlecase }}
+                    </span>
+                </div>
+                <p class="appointment-info">
+                    <i class="fas fa-clock"></i>
+                    {{ appt.slotStartTime ? (appt.slotStartTime | date: 'MMM d, y, h:mm a') : 'Not specified' }}
+                </p>
+                <button *ngIf="appt.status === 'pending' || appt.status === 'approved'"
+                    (click)="cancelAppointment(appt.id)" class="action-button cancel-button">
+                    <i class="fas fa-times-circle"></i> Cancel
+                </button>
+            </div>
+            <div *ngIf="appointments.length === 0" class="no-data">
+                <p>No appointments scheduled yet.</p>
+                <p class="suggestion">Explore available doctors below to book one!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Doctor Filter Section -->
+    <section class="filter-section" data-aos="fade-left">
+        <h2 class="section-title">Find a Doctor</h2>
+        <div class="filter-container">
+            <div class="filter-group">
+                <input type="text" [(ngModel)]="filterName" placeholder="Search by name..." class="filter-input"
+                    (ngModelChange)="applyFilters()" />
+            </div>
+            <div class="filter-group">
+                <input type="text" [(ngModel)]="filterSpecialty" placeholder="Search by specialty..."
+                    class="filter-input" (ngModelChange)="applyFilters()" />
+            </div>
+            <div class="filter-group">
+                <input type="text" [(ngModel)]="filterLocation" placeholder="Search by location..." class="filter-input"
+                    (ngModelChange)="applyFilters()" />
+            </div>
+        </div>
+    </section>
+
+    <!-- Doctor Cards -->
+    <section class="doctors-section" data-aos="fade-right">
+        <div class="doctors-grid">
+            <div *ngFor="let doctor of doctors" class="doctor-card" data-tilt>
+                <div class="doctor-header">
+                    <div class="doctor-avatar" [style.background]="getAvatarColor(doctor.id)">
+                        <span>{{ doctor.username?.charAt(0) }}</span>
+                    </div>
+                    <div class="doctor-info">
+                        <h3 class="doctor-name">Dr. {{ doctor.username }}</h3>
+                        <div class="doctor-meta">
+                            <span class="doctor-specialty"><i class="fas fa-stethoscope"></i> {{ doctor.specialty ||
+                                'General Practitioner' }}</span>
+                            <span class="doctor-location"><i class="fas fa-map-marker-alt"></i> {{ doctor.location ||
+                                'Location Not Specified' }}</span>
+                        </div>
+                    </div>
+                </div>
+                <button (click)="openAppointmentModal(doctor.id)" class="action-button appointment-button">
+                    <i class="fas fa-calendar-check"></i> Book Now
+                </button>
+            </div>
+            <div *ngIf="doctors.length === 0" class="no-data">
+                <p>No doctors match your criteria.</p>
+                <p class="suggestion">Try adjusting your filters or check back later.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Appointment Modal -->
+    <div *ngIf="isModalOpen" class="modal-overlay" (click)="closeModal($event)" tabindex="-1" role="dialog"
+        aria-labelledby="modal-title">
+        <div class="modal-content" data-aos="zoom-in" (click)="$event.stopPropagation()" role="document">
+            <div class="modal-header">
+                <h2 id="modal-title" class="modal-title">Schedule with Dr. {{ selectedDoctor?.username }}</h2>
+                <button class="close-btn" (click)="closeModal()" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form (ngSubmit)="scheduleAppointment()" class="modal-form" novalidate>
+                <div class="form-group">
+                    <label for="appointment-date" class="form-label"><i class="fas fa-calendar-alt"></i> Select
+                        Date</label>
+                    <input id="appointment-date" [(ngModel)]="selectedDate" name="date" type="date" class="form-input"
+                        (change)="loadDoctorSlots(selectedDoctor!.id, selectedDate)" required />
+                </div>
+                <div class="form-group">
+                    <label for="appointment-slot" class="form-label"><i class="fas fa-clock"></i> Available Time
+                        Slot</label>
+                    <select id="appointment-slot" [(ngModel)]="newAppointment.slotId" name="slotId" class="form-select"
+                        required [disabled]="!slots.length" aria-describedby="slot-help">
+                        <option value="" disabled>Select a time slot</option>
+                        <option *ngFor="let slot of slots" [value]="slot.id">
+                            {{ slot.slotStartTime | date: 'HH:mm' }} - {{ slot.slotEndTime | date: 'HH:mm' }} on {{
+                            slot.slotStartTime | date: 'mediumDate' }}
+                        </option>
+                    </select>
+                    <small id="slot-help" *ngIf="!slots.length && selectedDate" class="form-help">
+                        No available slots for this date.
+                    </small>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" (click)="closeModal()" class="action-button cancel-button">
+                        <i class="fas fa-times-circle"></i> Cancel
+                    </button>
+                    <button type="submit" class="action-button submit-button"
+                        [disabled]="!newAppointment.slotId || !selectedDate">
+                        <i class="fas fa-check-circle"></i> Confirm Booking
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

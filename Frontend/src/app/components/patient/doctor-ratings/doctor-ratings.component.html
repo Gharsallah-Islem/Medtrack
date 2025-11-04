@@ -1,0 +1,59 @@
+<div class="doctor-ratings" [ngClass]="{'dark-mode': isDarkMode}">
+    <h1 class="title" data-aos="fade-down">Rate Your Doctors</h1>
+
+    <!-- Your Ratings Section -->
+    <section class="ratings-section" data-aos="fade-up">
+        <h2 class="section-title">Your Ratings</h2>
+        <div class="ratings-list">
+            <div *ngFor="let rating of ratings" class="rating-card" data-tilt>
+                <div class="rating-header">
+                    <div class="doctor-avatar" [style.background]="getAvatarColor(rating.doctor.id)">
+                        <span>{{ rating.doctor.username?.charAt(0) }}</span>
+                    </div>
+                    <div class="rating-meta">
+                        <p class="doctor-name">Dr. {{ rating.doctor.username || getDoctorName(rating.doctor.id) }}</p>
+                        <div class="rating-stars">
+                            <i class="fas fa-star" *ngFor="let star of [1,2,3,4,5]"
+                                [ngClass]="{'filled': star <= rating.rating}"></i>
+                            <span class="rating-value">({{ rating.rating }}/5)</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="rating-review"><i class="fas fa-comment-alt"></i> {{ rating.review || 'No review provided' }}
+                </p>
+                <p class="rating-time"><i class="fas fa-clock"></i> {{ rating.createdAt | date: 'medium' }}</p>
+            </div>
+            <div *ngIf="ratings.length === 0" class="no-data">
+                <p>No ratings submitted yet.</p>
+                <p class="suggestion">Submit a rating below to share your experience!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Submit Rating Section -->
+    <section class="submit-section" data-aos="fade-right">
+        <h2 class="section-title">Submit a Rating</h2>
+        <form (ngSubmit)="submitRating()" class="rating-form">
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-user-md"></i> Select Doctor</label>
+                <select [(ngModel)]="newRating.doctor.id" name="doctorId" class="form-select" required>
+                    <option value="" disabled>Select a doctor</option>
+                    <option *ngFor="let doctor of doctors" [value]="doctor.id">
+                        {{ doctor.username }} ({{ doctor.specialty || 'General' }})
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-star"></i> Rating (1-5)</label>
+                <input [(ngModel)]="newRating.rating" name="rating" type="number" min="1" max="5" class="form-input"
+                    required placeholder="e.g., 4" />
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-comment-alt"></i> Review (Optional)</label>
+                <textarea [(ngModel)]="newRating.review" name="review" class="form-textarea" rows="3"
+                    placeholder="Share your experience..."></textarea>
+            </div>
+            <button type="submit" class="submit-button"><i class="fas fa-check-circle"></i> Submit Rating</button>
+        </form>
+    </section>
+</div>

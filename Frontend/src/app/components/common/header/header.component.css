@@ -1,0 +1,111 @@
+header {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    /* Modern gradient background */
+    color: white;
+    /* White text for contrast */
+    padding: 1rem;
+    /* Consistent padding */
+    position: sticky;
+    /* Sticks to the top on scroll */
+    top: 0;
+    /* Aligns to the top */
+    z-index: 1000;
+    /* Ensures it stays above other content */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for depth */
+    animation: fadeIn 0.5s ease-in;
+    /* Smooth fade-in on page load */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Clean, modern typography */
+}
+
+.container {
+    max-width: 1200px;
+    /* Limits content width */
+    margin: 0 auto;
+    /* Centers the container */
+    display: flex;
+    /* Flexbox for layout */
+    justify-content: space-between;
+    /* Spaces logo and nav apart */
+    align-items: center;
+    /* Vertically centers content */
+}
+
+.logo {
+    font-size: 1.5rem;
+    /* Larger text for prominence */
+    font-weight: bold;
+    /* Bold for emphasis */
+    letter-spacing: 0.05em;
+    /* Slight spacing for sophistication */
+    text-decoration: none;
+    /* Removes underline */
+    color: white;
+    /* Matches header text color */
+}
+
+nav a {
+    color: white;
+    /* White text for links */
+    text-decoration: none;
+    /* No underline */
+    padding: 0.5rem 1rem;
+    /* Padding for button-like feel */
+    border-radius: 0.25rem;
+    /* Rounded corners */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    /* Smooth hover transitions */
+}
+
+nav a:not(:last-child) {
+    margin-right: 1rem;
+    /* Spacing between links */
+}
+
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    /* Subtle background on hover */
+    transform: translateY(-2px);
+    /* Slight lift effect */
+}
+
+nav a:focus {
+    outline: 2px solid white;
+    /* Accessible focus outline */
+    outline-offset: 2px;
+    /* Offset for visibility */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        /* Stacks items vertically */
+    }
+
+    nav {
+        margin-top: 1rem;
+        /* Adds space above nav */
+    }
+
+    nav a {
+        display: block;
+        /* Stacks links vertically */
+        margin: 0.5rem 0;
+        /* Spacing between stacked links */
+    }
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        /* Starts invisible */
+    }
+
+    to {
+        opacity: 1;
+        /* Fully visible */
+    }
+}

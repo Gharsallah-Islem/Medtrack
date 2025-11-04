@@ -1,0 +1,77 @@
+<div class="medication-list" [ngClass]="{'dark-mode': isDarkMode}">
+  <h1 class="title" data-aos="fade-down">Your Medications</h1>
+
+  <!-- Medication List -->
+  <div class="medications-grid" data-aos="fade-up">
+    <div *ngFor="let med of medications" class="medication-card" data-tilt>
+      <div class="medication-header">
+        <div class="medication-icon" [style.background]="getAvatarColor(med.id ?? 0)">
+          <i class="fas fa-pills"></i>
+        </div>
+        <h3 class="medication-name">{{ med.name }}</h3>
+      </div>
+      <p class="medication-info"><i class="fas fa-flask"></i> Dosage: {{ med.dosage }}</p>
+      <p class="medication-info"><i class="fas fa-clock"></i> Frequency: {{ med.frequency }}</p>
+      <p class="medication-info"><i class="fas fa-calendar-alt"></i> Period: {{ med.startDate | date: 'shortDate' }} -
+        {{ med.endDate | date: 'shortDate' }}</p>
+      <p class="medication-info"><i class="fas fa-stopwatch"></i> Daily Times: {{ med.dailyTimes.join(', ') }}</p>
+      <button (click)="removeMedication(med.id ?? 0)" class="action-button remove-button">
+        <i class="fas fa-trash-alt"></i> Remove
+      </button>
+    </div>
+    <div *ngIf="medications.length === 0" class="no-data">
+      <p>No medications added yet.</p>
+      <p class="suggestion">Add a medication below to get started!</p>
+    </div>
+  </div>
+
+  <!-- Add Medication Form -->
+  <section class="add-medication-section" data-aos="fade-right">
+    <h2 class="section-title">Add New Medication</h2>
+    <form (ngSubmit)="addMedication()" class="medication-form">
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-prescription-bottle"></i> Medication Name</label>
+        <input [(ngModel)]="newMedication.name" name="name" class="form-input" required
+          placeholder="e.g., Paracetamol" />
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-flask"></i> Dosage</label>
+        <input [(ngModel)]="newMedication.dosage" name="dosage" class="form-input" required
+          placeholder="e.g., 500 mg" />
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-clock"></i> Frequency</label>
+        <select [(ngModel)]="newMedication.frequency" name="frequency" class="form-select" required
+          (change)="updateDailyTimes()">
+          <option value="1 time daily">1 Time Daily</option>
+          <option value="2 times daily">2 Times Daily</option>
+          <option value="3 times daily">3 Times Daily</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-calendar-alt"></i> Start Date</label>
+        <input [(ngModel)]="newMedication.startDate" name="startDate" type="date" class="form-input" required
+          [min]="minDate" [max]="maxDate" (change)="validateDates()" />
+        <div *ngIf="dateErrors.startDate" class="error-message">{{ dateErrors.startDate }}</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-calendar-alt"></i> End Date</label>
+        <input [(ngModel)]="newMedication.endDate" name="endDate" type="date" class="form-input" required
+          [min]="minDate" [max]="maxDate" (change)="validateDates()" />
+        <div *ngIf="dateErrors.endDate" class="error-message">{{ dateErrors.endDate }}</div>
+      </div>
+      <div class="form-group" *ngFor="let time of newMedication.dailyTimes; let i = index">
+        <label class="form-label"><i class="fas fa-stopwatch"></i> Time {{ i + 1 }}</label>
+        <input [(ngModel)]="newMedication.dailyTimes[i]" [name]="'time' + i" type="time" class="form-input" required
+          (change)="validateTime(i)" />
+        <div *ngIf="timeErrors[i]" class="error-message">{{ timeErrors[i] }}</div>
+      </div>
+      <div *ngIf="interactionWarning" class="warning-message" data-aos="fade-in">
+        {{ interactionWarning }}
+      </div>
+      <button type="submit" class="action-button submit-button" [disabled]="hasErrors()">
+        <i class="fas fa-plus-circle"></i> Add Medication
+      </button>
+    </form>
+  </section>
+</div>

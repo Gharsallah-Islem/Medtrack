@@ -1,0 +1,200 @@
+<div class="admin-dashboard" [ngClass]="{'dark-mode': isDarkMode}">
+  <canvas #bgCanvas id="bgCanvas" class="webgl-bg"></canvas>
+  <aside class="sidebar" [class.open]="isSidebarOpen" aria-label="Admin Navigation">
+    <button class="sidebar-toggle" (click)="toggleSidebar($event)" aria-label="Toggle Navigation">
+      <span *ngIf="!isSidebarOpen"><i class="fas fa-bars"></i></span>
+      <span *ngIf="isSidebarOpen"><i class="fas fa-times"></i></span>
+    </button>
+    <nav class="sidebar-nav">
+      <div class="sidebar-header">
+        <h2 class="sidebar-title">MedTrack</h2>
+        <p class="sidebar-subtitle">Admin Portal</p>
+      </div>
+      <a routerLink="/admin/dashboard" class="nav-link" data-aos="fade-right" data-aos-delay="100">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+      </a>
+      <a routerLink="/admin/statistics" class="nav-link" data-aos="fade-right" data-aos-delay="200">
+        <i class="fas fa-chart-line"></i> Statistics
+      </a>
+      <a routerLink="/admin/user-management" class="nav-link active" data-aos="fade-right" data-aos-delay="300">
+        <i class="fas fa-users-cog"></i> User Management
+      </a>
+      <a routerLink="/admin/feedback-management" class="nav-link" data-aos="fade-right" data-aos-delay="400">
+        <i class="fas fa-comment"></i> Feedback
+      </a>
+      <a routerLink="/admin/content-management" class="nav-link" data-aos="fade-right" data-aos-delay="500">
+        <i class="fas fa-file-alt"></i> Content
+      </a>
+      <a routerLink="/admin/settings" class="nav-link" data-aos="fade-right" data-aos-delay="600">
+        <i class="fas fa-cogs"></i> Settings
+      </a>
+      <button class="nav-link logout-button" (click)="logout()" data-aos="fade-right" data-aos-delay="700">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </nav>
+    <button class="dark-mode-toggle" (click)="toggleDarkMode()" aria-label="Toggle Dark Mode">
+      <span *ngIf="!isDarkMode"><i class="fas fa-moon"></i></span>
+      <span *ngIf="isDarkMode"><i class="fas fa-sun"></i></span>
+    </button>
+  </aside>
+  <main class="main-content" (click)="closeSidebarOnClickOutside($event)" aria-label="Main User Management Content">
+    <header class="dashboard-header" data-aos="zoom-in">
+      <h1 class="title">User Management</h1>
+      <p class="subtitle">Administer and optimize user accounts with precision.</p>
+    </header>
+    <section class="dashboard-section filter-section" data-aos="fade-up">
+      <h2 class="section-title"><i class="fas fa-filter"></i> Filters</h2>
+      <div class="filter-controls">
+        <div class="custom-input-wrapper glass">
+          <i class="fas fa-search input-icon"></i>
+          <input type="text" [(ngModel)]="searchQuery" (input)="applyFilters()" placeholder="Username, Email..."
+            class="custom-input" name="searchQuery" />
+        </div>
+        <div class="custom-select-wrapper glass">
+          <i class="fas fa-user input-icon"></i>
+          <select [(ngModel)]="roleFilter" (change)="applyFilters()" class="custom-select" name="roleFilter">
+            <option value="">All Roles</option>
+            <option value="patient">Patient</option>
+            <option value="doctor">Doctor</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <button class="action-btn" (click)="openAddUserPanel()">
+          <i class="fas fa-user-plus"></i> Add New User
+        </button>
+      </div>
+    </section>
+    <section class="dashboard-section" data-aos="fade-up">
+      <h2 class="section-title"><i class="fas fa-users"></i> User Directory</h2>
+      <div class="spinner" *ngIf="loading"></div>
+      <div class="table-container" *ngIf="!loading">
+        <table class="user-table glass">
+          <thead>
+            <tr>
+              <th (click)="sortTable('username')">
+                Username
+                <i class="fas"
+                  [ngClass]="sortColumn === 'username' ? (sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+              </th>
+              <th (click)="sortTable('email')">
+                Email
+                <i class="fas"
+                  [ngClass]="sortColumn === 'email' ? (sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+              </th>
+              <th (click)="sortTable('role')">
+                Role
+                <i class="fas"
+                  [ngClass]="sortColumn === 'role' ? (sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+              </th>
+              <th (click)="sortTable('specialty')">
+                Specialty
+                <i class="fas"
+                  [ngClass]="sortColumn === 'specialty' ? (sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+              </th>
+              <th (click)="sortTable('location')">
+                Location
+                <i class="fas"
+                  [ngClass]="sortColumn === 'location' ? (sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+              </th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of displayedUsers" class="glass">
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.role | titlecase }}</td>
+              <td>{{ user.specialty || 'N/A' }}</td>
+              <td>{{ user.location || 'N/A' }}</td>
+              <td>
+                <i class="fas"
+                  [ngClass]="{'fa-check-circle text-green-500': user.isActive, 'fa-times-circle text-red-500': !user.isActive}"></i>
+                {{ user.isActive ? 'Active' : 'Inactive' }}
+              </td>
+              <td class="actions">
+                <button class="action-btn small" (click)="startEdit(user)" aria-label="Edit User">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="action-btn small warn" (click)="toggleUserStatus(user)" aria-label="Toggle User Status">
+                  <i class="fas" [ngClass]="user.isActive ? 'fa-pause' : 'fa-play'"></i>
+                </button>
+                <button class="action-btn small delete" (click)="deleteUser(user.id)" aria-label="Delete User">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="displayedUsers.length === 0" class="no-data">
+              <td colspan="7">No users found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <div class="panel-overlay" *ngIf="showPanel" (click)="closePanel($event)">
+      <div class="panel glass" [@slideInOut]="showPanel ? 'in' : 'out'" (click)="$event.stopPropagation()">
+        <h2 class="section-title">{{ editingUser ? 'Edit User' : 'Add New User' }}</h2>
+        <form [formGroup]="userForm" (ngSubmit)="submitUser()" class="form-spacing">
+          <div class="custom-input-wrapper glass">
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" formControlName="username" required placeholder="Username" class="custom-input" />
+            <span class="error" *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched">
+              Username is required.
+            </span>
+          </div>
+          <div class="custom-input-wrapper glass" *ngIf="!editingUser">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" formControlName="password" required placeholder="Password" class="custom-input" />
+            <span class="error" *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">
+              Password must be at least 6 characters.
+            </span>
+          </div>
+          <div class="custom-input-wrapper glass">
+            <i class="fas fa-envelope input-icon"></i>
+            <input type="email" formControlName="email" required placeholder="Email" class="custom-input" />
+            <span class="error" *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+              <span *ngIf="userForm.get('email')?.errors?.['required']">Email is required.</span>
+              <span *ngIf="userForm.get('email')?.errors?.['email']">Invalid email format.</span>
+            </span>
+          </div>
+          <div class="custom-select-wrapper glass">
+            <i class="fas fa-user-tag input-icon"></i>
+            <select formControlName="role" class="custom-select">
+              <option value="" disabled>Select Role</option>
+              <option value="patient">Patient</option>
+              <option value="doctor">Doctor</option>
+              <option value="admin">Admin</option>
+            </select>
+            <span class="error" *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched">
+              Role is required.
+            </span>
+          </div>
+          <div class="custom-input-wrapper glass" *ngIf="userForm.get('role')?.value === 'doctor'">
+            <i class="fas fa-stethoscope input-icon"></i>
+            <input type="text" formControlName="specialty" placeholder="Specialty" class="custom-input" />
+          </div>
+          <div class="custom-input-wrapper glass">
+            <i class="fas fa-map-marker-alt input-icon"></i>
+            <input type="text" formControlName="location" (input)="onLocationInput($event)"
+              placeholder="Search for your location" class="custom-input" />
+            <ul class="autocomplete-suggestions" *ngIf="locationSuggestions.length > 0">
+              <li *ngFor="let suggestion of locationSuggestions" (click)="selectLocation(suggestion)">
+                {{ suggestion.display_name }}
+              </li>
+            </ul>
+            <div id="map" class="map"></div>
+          </div>
+          <div class="button-group">
+            <button type="submit" class="action-btn" [disabled]="userForm.invalid">
+              <i class="fas" [ngClass]="editingUser ? 'fa-save' : 'fa-user-plus'"></i>
+              {{ editingUser ? 'Update' : 'Add' }}
+            </button>
+            <button type="button" class="action-btn cancel" (click)="closePanel()">
+              <i class="fas fa-times"></i> Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>

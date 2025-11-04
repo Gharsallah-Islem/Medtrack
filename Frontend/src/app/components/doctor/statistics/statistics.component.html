@@ -1,0 +1,75 @@
+<div class="doctor-statistics" [ngClass]="{'dark-mode': isDarkMode}">
+    <!-- WebGL Background Canvas -->
+    <canvas id="bgCanvas" class="webgl-bg"></canvas>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" [class.open]="isSidebarOpen" aria-label="Doctor Navigation">
+        <button class="sidebar-toggle" (click)="toggleSidebar($event)" aria-label="Toggle Navigation">
+            <span *ngIf="!isSidebarOpen"><i class="fas fa-bars"></i></span>
+            <span *ngIf="isSidebarOpen"><i class="fas fa-times"></i></span>
+        </button>
+        <nav class="sidebar-nav">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">MedSync</h2>
+                <p class="sidebar-subtitle">Doctor Portal</p>
+            </div>
+            <a routerLink="/doctor/dashboard" class="nav-link" data-aos="fade-right" data-aos-delay="100">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a routerLink="/doctor/appointments" class="nav-link" data-aos="fade-right" data-aos-delay="200">
+                <i class="fas fa-calendar-check"></i> Appointments
+            </a>
+            <a routerLink="/doctor/availability" class="nav-link" data-aos="fade-right" data-aos-delay="300">
+                <i class="fas fa-clock"></i> Availability
+            </a>
+            <a routerLink="/doctor/patient-reports" class="nav-link" data-aos="fade-right" data-aos-delay="400">
+                <i class="fas fa-file-medical"></i> Patient Reports
+            </a>
+            <a routerLink="/doctor/statistics" class="nav-link active" data-aos="fade-right" data-aos-delay="500">
+                <i class="fas fa-chart-line"></i> Statistics
+            </a>
+            <a routerLink="/doctor/chat" class="nav-link" data-aos="fade-right" data-aos-delay="600">
+                <i class="fas fa-comments"></i> Chat
+            </a>
+            <a routerLink="/doctor/notifications" class="nav-link" data-aos="fade-right" data-aos-delay="700">
+                <i class="fas fa-bell"></i> Notifications
+            </a>
+            <button class="nav-link logout-button" (click)="logout()" data-aos="fade-right" data-aos-delay="800">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </nav>
+        <button class="dark-mode-toggle" (click)="toggleDarkMode()" aria-label="Toggle Dark Mode">
+            <span *ngIf="!isSidebarOpen || !isDarkMode"><i class="fas fa-moon"></i></span>
+            <span *ngIf="isSidebarOpen && isDarkMode"><i class="fas fa-sun"></i></span>
+        </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" (click)="closeSidebarOnClickOutside($event)">
+        <header class="dashboard-header" data-aos="zoom-in">
+            <h1 class="title">Doctor Statistics</h1>
+            <p class="subtitle">Insights into your performance and patient interactions.</p>
+        </header>
+
+        <section class="dashboard-section charts-section" data-aos="fade-up">
+            <h2 class="section-title">Performance Charts</h2>
+            <div *ngIf="isLoading" class="loading-spinner">Loading charts...</div>
+            <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+            <div class="charts-grid" *ngIf="!isLoading && !errorMessage">
+                <div class="chart-card" data-tilt data-aos="flip-up" data-aos-delay="100">
+                    <h3>Average Rating Over Time</h3>
+                    <canvas #chartCanvasRating></canvas>
+                </div>
+                <div class="chart-card" data-tilt data-aos="flip-up" data-aos-delay="200">
+                    <h3>Appointments Over Time</h3>
+                    <div *ngIf="appointments.length === 0" class="no-data-message">No appointments available.</div>
+                    <canvas #chartCanvasAppointments *ngIf="appointments.length > 0"></canvas>
+                </div>
+                <div class="chart-card" data-tilt data-aos="flip-up" data-aos-delay="300">
+                    <h3>Patient Satisfaction Trend</h3>
+                    <canvas #chartCanvasSatisfaction></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
